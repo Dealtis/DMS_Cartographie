@@ -1,23 +1,48 @@
-<div class="jumbotron">
-  <h1>'Allo, 'Allo!</h1>
-  <p class="lead">
-    <img src="images/yeoman.png" alt="I'm Yeoman"><br>
-    Always a pleasure scaffolding your apps.
-  </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#/">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
-</div>
-
-<div class="row marketing">
-  <h4>HTML5 Boilerplate</h4>
-  <p>
-    HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.
-  </p>
-
-  <h4>Angular</h4>
-  <p>
-    AngularJS is a toolset for building the framework most suited to your application development.
-  </p>
-
-  <h4>Karma</h4>
-  <p>Spectacular Test Runner for JavaScript.</p>
+<div class="container-fluid">
+  <section class="col-lg-10 col-md-10">
+    <md-input-container>
+      <label>Chauffeurs</label>
+      <md-select ng-model="selectedChauffeur" md-on-close="clearSearchTerm()" data-md-container-class="selectdemoSelectHeader">
+        <md-select-header class="demo-select-header">
+          <input ng-model="searchTerm" type="search" placeholder="Chercher un chauffeur" class="demo-header-searchbox _md-text">
+        </md-select-header>
+        <md-optgroup label="Chauffeurs">
+          <md-option ng-value="chauffeur" ng-repeat="chauffeur in chauffeurs |
+          filter:searchTerm">{{chauffeur.SALCODE}}</md-option>
+        </md-optgroup>
+      </md-select>
+    </md-input-container>
+    <md-checkbox ng-model="cb1" aria-label="Checkbox 1" ng-change="getPositionsLivraisons(selectedChauffeur,cb1)" ng-show="selectedChauffeur != null">
+      Livraisons
+    </md-checkbox>
+    <md-checkbox ng-model="cb2" aria-label="Checkbox 1" ng-change="getTrajetLivraison(selectedChauffeur,cb2)" ng-show="selectedChauffeur != null">
+      Trajet
+    </md-checkbox>
+    <!-- | filter:{showMap:true } -->
+    <ui-gmap-google-map center='map.center' zoom='map.zoom' control='map.control' bounds='bounds'>
+      <ui-gmap-marker coords="map.markerHome.coords" options="map.markerHome.options" idkey="map.markerHome.id"></ui-gmap-marker>
+      <ui-gmap-marker ng-repeat="m in markers" coords="m.coords" options="m.options" idkey="m.id" click="test($index)"></ui-gmap-marker>
+      <ui-gmap-polyline ng-repeat="p in polylines" path="p.path" stroke="p.stroke" visible='p.visible' geodesic='p.geodesic' fit="false" editable="p.editable" draggable="p.draggable" icons='p.icons'></ui-gmap-polyline>
+    </ui-gmap-google-map>
+  </section>
+  <section class="col-lg-2 col-md-2">
+    <v-accordion class="vAccordion--default" id="my-accordion" control="accordion">
+      <v-pane ng-repeat="m in markers" expanded="pane.isExpanded" id="{{ m.id }}" ng-show="m.showList" aria-controls="{{ m.id }}">
+        <v-pane-header>
+          <h5 ng-class="m.color">{{ ::m.infowindows.info.num }}</h5>
+        </v-pane-header>
+        <v-pane-content>
+          <p>
+            {{ ::m.infowindows.info.grp }}
+          </p>
+          <p>
+            {{ ::m.infowindows.info.codeano }}
+          </p>
+          <p>
+            {{ ::m.infowindows.info.memo }}
+          </p>
+        </v-pane-content>
+      </v-pane>
+    </v-accordion>
+  </section>
 </div>

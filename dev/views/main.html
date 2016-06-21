@@ -1,0 +1,22 @@
+<div class="container">
+  <md-input-container>
+    <label>Chauffeurs</label>
+    <md-select ng-model="selectedChauffeur" md-on-close="clearSearchTerm()" data-md-container-class="selectdemoSelectHeader">
+      <md-select-header class="demo-select-header">
+        <input ng-model="searchTerm" type="search" placeholder="Chercher un chauffeur" class="demo-header-searchbox _md-text">
+      </md-select-header>
+      <md-optgroup label="Chauffeurs">
+        <md-option ng-value="chauffeur" ng-repeat="chauffeur in chauffeurs |
+              filter:searchTerm">{{chauffeur}}</md-option>
+      </md-optgroup>
+    </md-select>
+  </md-input-container>
+  <md-checkbox ng-model="data.cb1" aria-label="Checkbox 1" ng-change="getPositionsLivraisons(selectedChauffeur)" ng-show="selectedChauffeur != null">
+    Livraisons
+  </md-checkbox>
+  <md-checkbox ng-model="data.cb2" aria-label="Checkbox 1" ng-show="selectedChauffeur != null">
+    Trajet
+  </md-checkbox>
+</div>
+<ui-gmap-google-map center='map.center' zoom='map.zoom'>
+  <ui-gmap-marker coords="map.markerHome.coords" options="map.markerHome.options" idkey="map.markerHome.id"></ui-gmap-google-map>

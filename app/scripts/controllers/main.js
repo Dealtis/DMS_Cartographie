@@ -8,6 +8,7 @@
  * Controller of the dmsCartoApp
  */
 angular.module('dmsCartoApp')
+<<<<<<< HEAD
   .controller('MainCtrl', function($scope, $mdToast, apiDMSCARTO, uiGmapGoogleMapApi) {
     $scope.map = {
       center: {
@@ -331,4 +332,12 @@ angular.module('dmsCartoApp')
         $scope.$apply();
       }
       //controller end
+=======
+  .controller('MainCtrl', function () {
+    this.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+>>>>>>> e0f8a53580a3095f27ada966bdae212fdf89b7fa
   });

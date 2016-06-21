@@ -2,3 +2,7 @@
 /dist
 /.tmp
 /.sass-cache
+<<<<<<< HEAD
+=======
+/bower_components
+>>>>>>> e0f8a53580a3095f27ada966bdae212fdf89b7fa

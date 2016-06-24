@@ -24,7 +24,6 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       // bower:js
-<<<<<<< HEAD
       'bower_components/jquery/dist/jquery.js',
       'bower_components/angular/angular.js',
       'bower_components/bootstrap/dist/js/bootstrap.js',
@@ -47,8 +46,6 @@ module.exports = function(config) {
       'bower_components/angular-busy/dist/angular-busy.js',
       'bower_components/v-accordion/dist/v-accordion.js',
       'bower_components/angular-mocks/angular-mocks.js',
-=======
->>>>>>> e0f8a53580a3095f27ada966bdae212fdf89b7fa
       // endbower
       'app/scripts/**/*.js',
       'test/mock/**/*.js',

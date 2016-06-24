@@ -8,7 +8,6 @@
  * Controller of the dmsCartoApp
  */
 angular.module('dmsCartoApp')
-<<<<<<< HEAD
   .controller('MainCtrl', function($scope, $mdToast, apiDMSCARTO, uiGmapGoogleMapApi) {
     $scope.map = {
       center: {
@@ -54,6 +53,7 @@ angular.module('dmsCartoApp')
         $scope.homepos = new google.maps.LatLng(gpsSocPos[0], gpsSocPosLong[0]);
         loading_screen.finish();
       }, function errorCallback(response) {
+        console.log("error api");
         $scope.map = {
           center: {
             latitude: 45,
@@ -95,7 +95,7 @@ angular.module('dmsCartoApp')
         var currentpos;
         angular.fromJson(apiDMSCARTO.loadPositionsLivraions(chauffeur.SALCODE))
           .then(function(response) {
-            if (response.data.length == 0) {              
+            if (response.data.length == 0) {
                 var toast = $mdToast.simple()
                   .textContent('Pas de données de livraisons')
                   .action('X')
@@ -149,7 +149,7 @@ angular.module('dmsCartoApp')
                     var addmarker = {
                       showList: false,
                       showMap: false,
-                      color: getClassColor(marker.DMSUIVICODEANO),
+                      color: getClassColor("pack"),
                       id: Date.now(),
                       coords: {
                         latitude: markersplit[0],
@@ -176,10 +176,15 @@ angular.module('dmsCartoApp')
                       var num = $scope.markers[i - 2].options.enum;
                       console.log(num);
                       $scope.markers[i - num].infowindows.info.num += " " + marker.DMSUIVIOTSNUM;
+                      $scope.markers[i - num].infowindows.info.codeano += " " + marker.DMSUIVICODEANO;
+                      $scope.markers[i - num].infowindows.info.memo += " " + marker.DMSUIVIMEMO;
                       $scope.markers[i - 1].options.enum = num + 1;
                     } else {
+                      $scope.markers[i - 2].color = "purple";
                       $scope.markers[i - 2].options.icon.url = 'images/ICO/ico_liv_v_m.svg';
                       $scope.markers[i - 2].infowindows.info.num += " " + marker.DMSUIVIOTSNUM;
+                      $scope.markers[i - 2].infowindows.info.codeano += " " + marker.DMSUIVICODEANO;
+                      $scope.markers[i - 2].infowindows.info.memo += " " + marker.DMSUIVIMEMO;
                     }
 
 
@@ -258,6 +263,9 @@ angular.module('dmsCartoApp')
           case "RAMCFM":
             return 'green';
             break;
+          case "pack":
+            return 'purple';
+            break;
           default:
             return 'red';
         }
@@ -332,12 +340,4 @@ angular.module('dmsCartoApp')
         $scope.$apply();
       }
       //controller end
-=======
-  .controller('MainCtrl', function () {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
->>>>>>> e0f8a53580a3095f27ada966bdae212fdf89b7fa
   });

@@ -12,35 +12,30 @@
         </md-optgroup>
       </md-select>
     </md-input-container>
-    <md-checkbox ng-model="cb1" aria-label="Checkbox 1" ng-change="getPositionsLivraisons(selectedChauffeur,cb1)" ng-show="selectedChauffeur != null">
+    <md-checkbox ng-model="cb1" aria-label="Checkbox 1" ng-change="getPositionsLivraisons(selectedChauffeur,cb1,date)" ng-show="selectedChauffeur != null">
       Livraisons
     </md-checkbox>
-    <md-checkbox ng-model="cb2" aria-label="Checkbox 1" ng-change="getTrajetLivraison(selectedChauffeur,cb2)" ng-show="selectedChauffeur != null">
+    <md-checkbox ng-disabled="true" ng-model="cb2" aria-label="Checkbox 1" ng-change="getTrajetLivraison(selectedChauffeur,cb2)" ng-show="selectedChauffeur != null">
       Trajet
     </md-checkbox>
+     <md-datepicker ng-model="date" md-placeholder="Enter date" ng-show="selectedChauffeur != null" ng-change="getPositionsLivraisons(selectedChauffeur,cb1,date)"></md-datepicker>
     <!-- | filter:{showMap:true } -->
     <ui-gmap-google-map center='map.center' zoom='map.zoom' control='map.control' bounds='bounds'>
       <ui-gmap-marker coords="map.markerHome.coords" options="map.markerHome.options" idkey="map.markerHome.id"></ui-gmap-marker>
-      <ui-gmap-marker ng-repeat="m in markers" coords="m.coords" options="m.options" idkey="m.id" click="test($index)"></ui-gmap-marker>
+      <ui-gmap-markers models="markers" coords="'coords'" icon="'options.icon'" type="cluster" doCluster="true" clusterOptions="clusterOptions" click="test(id)">
+        </ui-gmap-markers>
       <ui-gmap-polyline ng-repeat="p in polylines" path="p.path" stroke="p.stroke" visible='p.visible' geodesic='p.geodesic' fit="false" editable="p.editable" draggable="p.draggable" icons='p.icons'></ui-gmap-polyline>
     </ui-gmap-google-map>
   </section>
-  <section class="col-lg-2 col-md-2">
-    <v-accordion class="vAccordion--default" id="my-accordion" control="accordion">
-      <v-pane ng-repeat="m in markers" expanded="pane.isExpanded" id="{{ m.id }}" ng-show="m.showList" aria-controls="{{ m.id }}">
+  <section class="col-lg-2 col-md-2 aside">
+    <v-accordion class="vAccordion--default" id="my-accordion" control="accordion" multiple>
+      <v-pane ng-repeat="m in markers" expanded="pane.isExpanded" id="{{ ::m.id }}" ng-show="m.showList" aria-controls="{{ m.id }}">
         <v-pane-header>
-          <h5 ng-class="m.color">{{ ::m.infowindows.info.num }}</h5>
+          <h5 ng-class="m.color" ng-bind-html="(m.infowindows.info.ico)+ (m.infowindows.info.num)"></h5>
         </v-pane-header>
         <v-pane-content>
-          <p>
-            {{ ::m.infowindows.info.date }}
-          </p>
-          <p>
-            {{ ::m.infowindows.info.codeano }}
-          </p>
-          <p>
-            {{ ::m.infowindows.info.memo }}
-          </p>
+          <div ng-bind-html="m.infowindows.info.data">
+          </div>
         </v-pane-content>
       </v-pane>
     </v-accordion>

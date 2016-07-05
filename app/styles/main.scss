@@ -1,16 +1,13 @@
 // bower:scss
 @import "bourbon/app/assets/stylesheets/_bourbon.scss";
 @import "font-awesome/scss/font-awesome.scss";
-// endbower
-
-
+@import "components-font-awesome/scss/font-awesome.scss"; // endbower
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
   color: #000;
   padding: 0.2em 0;
 }
-
 body {
   padding: 0;
 }
@@ -40,15 +37,31 @@ body {
 .selectdemoSelectHeader md-content._md {
   max-height: 240px;
 }
-
-.green{
+.aside {
+  max-height: 100vh;
+  overflow-x: auto;
+}
+.green {
   color: green;
+  &.underline {
+    font-weight: bold;
+  }
 }
-
-.red{
+.red {
   color: red;
+  &.underline {
+    font-weight: bold;
+  }
 }
-
-.purple{
-  color:purple;
+.purple {
+  color: purple;
+  &.underline {
+    font-weight: bold;
+  }
+}
+.orange {
+  color: orange;
+  &.underline {
+    font-weight: bold;
+  }
 }

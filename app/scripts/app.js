@@ -13,6 +13,8 @@ angular
     'ngAnimate',
     'ngRoute',
     'ngMaterial',
+    'ngCookies',
+    'ngSanitize',
     'uiGmapgoogle-maps',
     'angular.filter',
     'cgBusy',
@@ -35,9 +37,3 @@ angular
       libraries: 'weather,geometry,visualization'
     });
   });
-
-window.loading_screen = window.pleaseWait({
-  logo :'images/ICO/ico_home.svg',
-  backgroundColor: '#4CDEBA',
-  loadingHtml: "<div class='sk-wave'><div class='sk-rect sk-rect1'></div><div class='sk-rect sk-rect2'></div><div class='sk-rect sk-rect3'></div><div class='sk-rect sk-rect4'></div><div class='sk-rect sk-rect5'></div></div>"
-});

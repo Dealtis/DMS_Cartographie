@@ -45,6 +45,8 @@ module.exports = function(config) {
       'bower_components/angular-filter/dist/angular-filter.min.js',
       'bower_components/angular-busy/dist/angular-busy.js',
       'bower_components/v-accordion/dist/v-accordion.js',
+      'bower_components/angular-cookies/angular-cookies.js',
+      'bower_components/angular-sanitize/angular-sanitize.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       'app/scripts/**/*.js',

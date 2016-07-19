@@ -9,7 +9,8 @@
  */
 angular.module('dmsCartoApp')
   .service('apiDMSCARTO', function ($http,$cookies) {
-    var url = 'http://10.1.2.70/mvcdms/api/';
+    var url = 'http://dms.jeantettransport.com/api/';
+
 
     // var chauffeurs = ['PDELATTRE','PGRUPALLO','PSWANN','SLOPEZ','GKARTNER','AINGLESE','AROUXFACCHINO','MAMEUR'];
     // var center = {"SocCenter":[{"pos": "45.6438255,5.1716331"}]};
@@ -18,15 +19,15 @@ angular.module('dmsCartoApp')
 
     //$cookies.get('SOCID')
     this.loadChauffeurs = function (idsoc) {
-      //return $http.get(url+'?getSal='+$cookies.get('SOCID'));
-      return $http.get(url+'dmssalarie?val='+idsoc);
+      // return $http.get(url+'?getSal='+$cookies.get('SOCID'));
+      return $http.get(url+'dmssalarie?val='+$cookies.get('SOCID'));
     };
     this.loadSocposition = function (idsoc) {
-      //return $http.get(url+'?getCenter='+$cookies.get('SOCID')+'&o');
-      return $http.get(url+'dmscenter?val='+idsoc);
+      // return $http.get(url+'?getCenter='+$cookies.get('SOCID')+'&o');
+      return $http.get(url+'dmscenter?val='+$cookies.get('SOCID'));
     };
     this.loadPositionsLivraions = function (chauffeur,date) {
-      console.log(url+'dmsposlivraison?val='+chauffeur+"&date="+date);
+      // console.log(url+'dmsposlivraison?val='+chauffeur+"&date="+date);
       return $http.get(url+'dmsposlivraison?val='+chauffeur+"&date="+date);
     };
     this.loadPositionsGPS = function (chauffeur,date) {

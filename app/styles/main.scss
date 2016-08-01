@@ -66,3 +66,37 @@ body {
     font-weight: bold;
   }
 }
+.legendebg{
+  text-decoration: none;
+  background-color: white;
+  padding: 5px 35px;
+  -moz-box-shadow: 5px 5px 5px 0 #656565;
+  -webkit-box-shadow: 5px 5px 5px 0 #656565;
+  -o-box-shadow: 5px 5px 5px 0 #656565;
+  box-shadow: 5px 5px 5px 0 #656565;
+  filter:progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=134, Strength=5);
+}
+.legende {
+  cursor: pointer;
+
+  transition: all linear 1s;
+  ul {
+    opacity: 1;
+    height: 300px;
+    width: 300px;
+    &.visible {
+      width: 50px;
+      height: 0;
+      opacity: 0;
+    }
+    transition: all ease 1s;
+    li {
+      list-style: none;
+      font-size: 14px;
+      width: 250px;
+      img {
+        padding-right: 8px;
+      }
+    }
+  }
+}

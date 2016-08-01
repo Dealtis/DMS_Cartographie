@@ -18,12 +18,27 @@
     <md-checkbox ng-disabled="true" ng-model="cb2" aria-label="Checkbox 1" ng-change="getTrajetLivraison(selectedChauffeur,cb2)" ng-show="selectedChauffeur != null">
       Trajet
     </md-checkbox>
-     <md-datepicker ng-model="date" md-placeholder="Enter date" ng-show="selectedChauffeur != null" ng-change="getPositionsLivraisons(selectedChauffeur,cb1,date)"></md-datepicker>
+    <md-datepicker ng-model="date" md-placeholder="Enter date" ng-show="selectedChauffeur != null" ng-change="getPositionsLivraisons(selectedChauffeur,cb1,date)"></md-datepicker>
     <!-- | filter:{showMap:true } -->
     <ui-gmap-google-map center='map.center' zoom='map.zoom' control='map.control' bounds='bounds'>
-      <ui-gmap-marker coords="map.markerHome.coords" options="map.markerHome.options" idkey="map.markerHome.id"></ui-gmap-marker>
-      <ui-gmap-markers models="markers" coords="'coords'" icon="'options.icon'" type="cluster" doCluster="true" clusterOptions="clusterOptions" click="test(id)">
-        </ui-gmap-markers>
+      <ui-gmap-map-control position="top-right">
+        <div class="legendebg" ng-controller="LegendCtrl">
+          <a class="legende" ng-click="toggle()">
+            <h5>Légende</h5>
+            <ul class="visible">
+              <li><img src="images/ico/ico_truck.svg" alt="" width="40px"/>Position du chauffeur</li>
+              <li><img src="images/ico/ico_liv_v.svg" alt="" width="40px"/>Livraisons conforme</li>
+              <li><img src="images/ico/ico_ram_v.svg" alt="" width="40px"/>Ramasse conforme</li>
+              <li><img src="images/ico/ico_liv_a.svg" alt="" width="40px"/>Livraison non-conforme</li>
+              <li><img src="images/ico/ico_ram_a.svg" alt="" width="40px"/>Ramasse non-conforme</li>
+              <li><img src="images/ico/ico_liv_v_m.svg" alt="" width="40px"/>Regroupement de position</li>
+            </ul>
+          </a>
+        </div>
+      </ui-gmap-map-control>
+      <ui-gmap-marker coords="map.markerHome.coords" options="map.markerHome.options" idkey="10"></ui-gmap-marker>
+      <ui-gmap-marker idkey="11" coords="map.lastPos.coords" options="map.lastPos.options"></ui-gmap-marker>
+      <ui-gmap-markers models="markers" coords="'coords'" icon="'options.icon'" type="cluster" doCluster="true" clusterOptions="clusterOptions" click="test(id)"></ui-gmap-markers>
       <ui-gmap-polyline ng-repeat="p in polylines" path="p.path" stroke="p.stroke" visible='p.visible' geodesic='p.geodesic' fit="false" editable="p.editable" draggable="p.draggable" icons='p.icons'></ui-gmap-polyline>
     </ui-gmap-google-map>
   </section>
@@ -34,8 +49,7 @@
           <h5 ng-class="m.color" ng-bind-html="(m.infowindows.info.ico)+ (m.infowindows.info.num)"></h5>
         </v-pane-header>
         <v-pane-content>
-          <div ng-bind-html="m.infowindows.info.data">
-          </div>
+          <div ng-bind-html="m.infowindows.info.data"></div>
         </v-pane-content>
       </v-pane>
     </v-accordion>

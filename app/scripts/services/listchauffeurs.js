@@ -21,9 +21,6 @@ angular.module('dmsCartoApp')
       return $http.get(url + 'dmscenter?val=' + idsoc);
     };
     this.loadPositionsLivraions = function (chauffeur,date) {
-      // console.log(url+'dmsposlivraison?val='+chauffeur+"&date="+date);
-      //console.log(url+'dmsposlivraison?val='+chauffeur+"&date="+date);
-      //console.log(url+'dmsposlivraison?val='+chauffeur+"&date="+date);
       return $http.get(url+'dmsposlivraison?val='+chauffeur+"&date="+date);
     };
     this.loadPositionsGPS = function(chauffeur, date) {
@@ -42,7 +39,6 @@ angular.module('dmsCartoApp')
       return $http.get(url+'dmsInfoGrp?val='+chauffeur);
     };
     this.getGeocode = function (nom, adr, cp, ville) {
-      //console.log("https://maps.googleapis.com/maps/api/geocode/json?address="+_.replace(nom,new RegExp(" ","g"),"+")+","+_.replace(adr,new RegExp(" ","g"),"+")+","+cp+","+_.replace(ville,new RegExp(" ","g"),"+"));
       return $http.get("https://maps.googleapis.com/maps/api/geocode/json?address="+_.replace(nom,new RegExp(" ","g"),"+")+","+_.replace(adr,new RegExp(" ","g"),"+")+","+cp+","+_.replace(ville,new RegExp(" ","g"),"+"));
     };
 

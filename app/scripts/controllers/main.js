@@ -85,6 +85,12 @@ angular.module('dmsCartoApp')
           }]
         }
         $scope.homepos = new google.maps.LatLng(gpsSocPos[0], gpsSocPosLong[0]);
+
+
+
+
+
+
         LoadingScreen.finish();
       }, function errorCallback(response) {
         console.log("error api");

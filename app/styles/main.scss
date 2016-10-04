@@ -54,6 +54,12 @@ body {
     font-weight: bold;
   }
 }
+.blue {
+  color: #3498db;
+  &.underline {
+    font-weight: bold;
+  }
+}
 .purple {
   color: purple;
   &.underline {
@@ -66,6 +72,11 @@ body {
     font-weight: bold;
   }
 }
+md-progress-circular,.loading{
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .legendebg{
   text-decoration: none;
   background-color: white;

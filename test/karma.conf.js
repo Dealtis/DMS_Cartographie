@@ -42,7 +42,7 @@ module.exports = function(config) {
       'bower_components/angular-google-maps/dist/angular-google-maps.js',
       'bower_components/angular-loading-bar/build/loading-bar.js',
       'bower_components/please-wait/build/please-wait.js',
-      'bower_components/angular-filter/dist/angular-filter.min.js',
+      'bower_components/angular-filter/dist/angular-filter.js',
       'bower_components/angular-busy/dist/angular-busy.js',
       'bower_components/v-accordion/dist/v-accordion.js',
       'bower_components/angular-cookies/angular-cookies.js',

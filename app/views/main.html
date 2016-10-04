@@ -15,12 +15,25 @@
     <md-checkbox ng-model="cb1" aria-label="Checkbox 1" ng-change="getPositionsLivraisons(selectedChauffeur,cb1,date)" ng-show="selectedChauffeur != null">
       Livraisons
     </md-checkbox>
-    <md-checkbox ng-disabled="true" ng-model="cb2" aria-label="Checkbox 1" ng-change="getTrajetLivraison(selectedChauffeur,cb2)" ng-show="selectedChauffeur != null">
+    <md-checkbox  ng-model="cb2" aria-label="Checkbox 2" ng-change="getTrajetLivraison(selectedChauffeur,cb2)" ng-show="selectedChauffeur != null">
       Trajet
+    </md-checkbox>
+    <md-checkbox ng-model="cb3" aria-label="Checkbox 3" ng-change="getLastPosOther(selectedChauffeur,cb3)" ng-show="selectedChauffeur != null">
+      Autres chauffeurs
     </md-checkbox>
     <md-datepicker ng-model="date" md-placeholder="Enter date" ng-show="selectedChauffeur != null" ng-change="getPositionsLivraisons(selectedChauffeur,cb1,date)"></md-datepicker>
     <!-- | filter:{showMap:true } -->
-    <ui-gmap-google-map center='map.center' zoom='map.zoom' control='map.control' bounds='bounds'>
+    <md-button class="md-icon-button md-raised" ng-show="selectedChauffeur != null" aria-label="recadre" ng-click="recadre()">
+      <md-icon md-svg-icon="images/ICO/ico_fullscreen.svg"></md-icon>
+    </md-button>
+    <md-button class="md-icon-button md-raised" ng-show="selectedChauffeur != null" aria-label="refresh" ng-click="refresh()">
+      <md-icon md-svg-icon="images/ICO/ico_refresh.svg"></md-icon>
+    </md-button>
+    <div class="loading" ng-show="loading">
+      <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+      <span>Loading predict</span>
+    </div>
+    <ui-gmap-google-map center='map.center' zoom='map.zoom' control='map.control' bounds='bounds' pan='true'>
       <ui-gmap-map-control position="top-right">
         <div class="legendebg" ng-controller="LegendCtrl">
           <a class="legende" ng-click="toggle()">
@@ -37,14 +50,15 @@
         </div>
       </ui-gmap-map-control>
       <ui-gmap-marker coords="map.markerHome.coords" options="map.markerHome.options" idkey="10"></ui-gmap-marker>
-      <ui-gmap-marker idkey="11" coords="map.lastPos.coords" options="map.lastPos.options"></ui-gmap-marker>
+      <ui-gmap-marker ng-repeat="m in map.lastPos.coords" idkey="11" coords="m" options="map.lastPos.options"></ui-gmap-marker>
+      <ui-gmap-marker ng-repeat="mk in otherLastPos" idkey="mk.id" coords="mk.coords" options="mk.options"></ui-gmap-marker>
       <ui-gmap-markers models="markers" coords="'coords'" icon="'options.icon'" type="cluster" doCluster="true" clusterOptions="clusterOptions" click="test(id)"></ui-gmap-markers>
       <ui-gmap-polyline ng-repeat="p in polylines" path="p.path" stroke="p.stroke" visible='p.visible' geodesic='p.geodesic' fit="false" editable="p.editable" draggable="p.draggable" icons='p.icons'></ui-gmap-polyline>
     </ui-gmap-google-map>
   </section>
   <section class="col-lg-2 col-md-2 aside">
-    <v-accordion class="vAccordion--default" id="my-accordion" control="accordion" multiple>
-      <v-pane ng-repeat="m in markers" expanded="pane.isExpanded" id="{{ ::m.id }}" ng-show="m.showList" aria-controls="{{ m.id }}">
+    <v-accordion class="vAccordion--default" id="my-accordion" control="accordion">
+      <v-pane ng-repeat="m in markers" expanded="pane.isExpanded" id="{{ ::m.id }}" ng-show="m.showList" aria-controls="{{ m.id }}" ng-click="setCenter(pane.isExpanded,m.coords)">
         <v-pane-header>
           <h5 ng-class="m.color" ng-bind-html="(m.infowindows.info.ico)+ (m.infowindows.info.num)"></h5>
         </v-pane-header>

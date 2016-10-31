@@ -3,21 +3,30 @@
 @import "font-awesome/scss/font-awesome.scss";
 @import "components-font-awesome/scss/font-awesome.scss";
 // endbower
+
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
   color: #000;
   padding: 0.2em 0;
 }
+
+html, body {
+  height: 100%;
+}
+
 body {
   padding: 0;
 }
+
 .angular-google-map-container {
   height: 90vh;
 }
+
 .selectdemoSelectHeader {
   /* Please note: All these selectors are only applied to children of elements with the 'selectdemoSelectHeader' class */
 }
+
 .selectdemoSelectHeader .demo-header-searchbox {
   border: none;
   outline: none;
@@ -25,6 +34,7 @@ body {
   width: 100%;
   padding: 0;
 }
+
 .selectdemoSelectHeader .demo-select-header {
   box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1), 0 0 0 0 rgba(0, 0, 0, 0.14), 0 0 0 0 rgba(0, 0, 0, 0.12);
   padding-left: 10.667px;
@@ -35,49 +45,107 @@ body {
   align-items: center;
   width: auto;
 }
+
 .selectdemoSelectHeader md-content._md {
   max-height: 240px;
 }
+
 .aside {
   max-height: 100vh;
   overflow-x: auto;
 }
+
 .green {
   color: green;
+
   &.underline {
     font-weight: bold;
   }
 }
+
 .red {
   color: red;
+
   &.underline {
     font-weight: bold;
   }
 }
+
 .blue {
   color: #3498db;
+
   &.underline {
     font-weight: bold;
   }
 }
+
 .purple {
   color: purple;
+
   &.underline {
     font-weight: bold;
   }
 }
+
 .orange {
   color: orange;
+
   &.underline {
     font-weight: bold;
   }
 }
-md-progress-circular,.loading{
+
+.none {
+  display: none;
+}
+
+.loading,
+md-progress-circular {
   display: inline-block;
   vertical-align: middle;
 }
+@keyframes pulse {
+  0% {
+    opacity: 0;
+  }
 
-.legendebg{
+  100% {
+    opacity: 0.9;
+  }
+}
+
+.labels {
+  background: white;
+  padding: 3px;
+  opacity: 0.8;
+  box-shadow: 2px 2px 2px #656565;
+  font-family: Roboto,Arial,sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: black;
+  animation: pulse 0.5s ease-out;
+}
+
+.btn_fullscreen {
+  background: white;
+  padding: 3px 5px 5px;
+  border-radius: 5px;
+}
+
+.fullscreen {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+md-switch {
+  display: inline-block;
+  vertical-align: -webkit-baseline-middle;
+}
+
+.legendebg {
   text-decoration: none;
   background-color: white;
   padding: 5px 35px;
@@ -87,24 +155,28 @@ md-progress-circular,.loading{
   box-shadow: 5px 5px 5px 0 #656565;
   filter:progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=134, Strength=5);
 }
+
 .legende {
   cursor: pointer;
-
   transition: all linear 1s;
+
   ul {
     opacity: 1;
     height: 300px;
     width: 300px;
+
     &.visible {
       width: 50px;
       height: 0;
       opacity: 0;
     }
     transition: all ease 1s;
+
     li {
       list-style: none;
       font-size: 14px;
       width: 250px;
+
       img {
         padding-right: 8px;
       }

@@ -1,69 +1,91 @@
-<div class="container-fluid">
-  <section class="col-lg-10 col-md-10">
-    <md-input-container>
-      <label>Chauffeurs</label>
-      <md-select ng-model="selectedChauffeur" md-on-close="clearSearchTerm()" data-md-container-class="selectdemoSelectHeader">
-        <md-select-header class="demo-select-header">
-          <input ng-model="searchTerm" type="search" placeholder="Chercher un chauffeur" class="demo-header-searchbox _md-text">
-        </md-select-header>
-        <md-optgroup label="Chauffeurs">
-          <md-option ng-value="chauffeur" ng-repeat="chauffeur in chauffeurs |
+<div class="">
+  <section class="col-lg-10 col-md-10" cg-busy='loading'>
+    <div>
+      <md-input-container>
+        <label>Chauffeurs</label>
+        <md-select ng-model="selectedChauffeur" md-on-close="clearSearchTerm()" data-md-container-class="selectdemoSelectHeader">
+          <md-select-header class="demo-select-header">
+            <input ng-model="searchTerm" type="search" placeholder="Chercher un chauffeur" class="demo-header-searchbox _md-text">
+          </md-select-header>
+          <md-optgroup label="Chauffeurs">
+            <md-option ng-value="chauffeur" ng-repeat="chauffeur in chauffeurs |
           filter:searchTerm">{{chauffeur.SALCODE}}</md-option>
-        </md-optgroup>
-      </md-select>
-    </md-input-container>
-    <md-checkbox ng-model="cb1" aria-label="Checkbox 1" ng-change="getPositionsLivraisons(selectedChauffeur,cb1,date)" ng-show="selectedChauffeur != null">
-      Livraisons
-    </md-checkbox>
-    <md-checkbox  ng-model="cb2" aria-label="Checkbox 2" ng-change="getTrajetLivraison(selectedChauffeur,cb2)" ng-show="selectedChauffeur != null">
-      Trajet
-    </md-checkbox>
-    <md-checkbox ng-model="cb3" aria-label="Checkbox 3" ng-change="getLastPosOther(selectedChauffeur,cb3)" ng-show="selectedChauffeur != null">
-      Autres chauffeurs
-    </md-checkbox>
-    <md-datepicker ng-model="date" md-placeholder="Enter date" ng-show="selectedChauffeur != null" ng-change="getPositionsLivraisons(selectedChauffeur,cb1,date)"></md-datepicker>
-    <!-- | filter:{showMap:true } -->
-    <md-button class="md-icon-button md-raised" ng-show="selectedChauffeur != null" aria-label="recadre" ng-click="recadre()">
-      <md-icon md-svg-icon="images/ICO/ico_fullscreen.svg"></md-icon>
-    </md-button>
-    <md-button class="md-icon-button md-raised" ng-show="selectedChauffeur != null" aria-label="refresh" ng-click="refresh()">
-      <md-icon md-svg-icon="images/ICO/ico_refresh.svg"></md-icon>
-    </md-button>
-    <div class="loading" ng-show="loading">
-      <md-progress-circular md-mode="indeterminate"></md-progress-circular>
-      <span>Loading predict</span>
+          </md-optgroup>
+        </md-select>
+      </md-input-container>
+      <md-checkbox ng-model="cb1" aria-label="Checkbox 1" ng-change="getPositionsLivraisons(selectedChauffeur,cb1,date)" ng-disabled="selectedChauffeur == null">
+        Livraisons
+      </md-checkbox>
+      <md-checkbox ng-model="cb2" aria-label="Checkbox 2" ng-change="getTrajetLivraison(selectedChauffeur,cb2,date)" ng-disabled="selectedChauffeur == null">
+        Trajet
+      </md-checkbox>
+      <md-checkbox ng-model="cb3" aria-label="Checkbox 3" ng-change="getLastPosOther(selectedChauffeur,cb3)">
+        Chauffeurs
+      </md-checkbox>
+      <md-datepicker ng-model="date" md-placeholder="Enter date" ng-disabled="selectedChauffeur == null" ng-change="getPositionsLivraisons(selectedChauffeur,cb1,date);getTrajetLivraison(selectedChauffeur,cb2,date)"></md-datepicker>
+      <md-button class="md-icon-button md-raised" ng-disabled="selectedChauffeur == null" aria-label="recadre" ng-click="recadre()">
+        <md-icon md-svg-icon="images/ICO/ico_fullscreen.svg"></md-icon>
+        <md-tooltip md-direction="bottom">
+          Recentrer la carte
+        </md-tooltip>
+      </md-button>
+      <md-button class="md-icon-button md-raised" ng-disabled="selectedChauffeur == null" aria-label="refresh" ng-click="refresh()">
+        <md-icon md-svg-icon="images/ICO/ico_refresh.svg"></md-icon>
+        <md-tooltip md-direction="bottom">
+          Recharger la carte
+        </md-tooltip>
+      </md-button>
+      <md-switch ng-model="sw1" aria-label="Switch 1" ng-change="reloadAuto(selectedChauffeur,cb1,cb2,cb3,sw1,date)">
+        Auto reload
+      </md-switch>
+      <md-progress-circular md-mode="indeterminate" ng-hide="!loadingPrdict"></md-progress-circular>
     </div>
-    <ui-gmap-google-map center='map.center' zoom='map.zoom' control='map.control' bounds='bounds' pan='true'>
-      <ui-gmap-map-control position="top-right">
-        <div class="legendebg" ng-controller="LegendCtrl">
-          <a class="legende" ng-click="toggle()">
-            <h5>Légende</h5>
-            <ul class="visible">
-              <li><img src="images/ico/ico_truck.svg" alt="" width="40px"/>Position du chauffeur</li>
-              <li><img src="images/ico/ico_liv_v.svg" alt="" width="40px"/>Livraisons conforme</li>
-              <li><img src="images/ico/ico_ram_v.svg" alt="" width="40px"/>Ramasse conforme</li>
-              <li><img src="images/ico/ico_liv_a.svg" alt="" width="40px"/>Livraison non-conforme</li>
-              <li><img src="images/ico/ico_ram_a.svg" alt="" width="40px"/>Ramasse non-conforme</li>
-              <li><img src="images/ico/ico_liv_v_m.svg" alt="" width="40px"/>Regroupement de position</li>
-            </ul>
-          </a>
-        </div>
-      </ui-gmap-map-control>
-      <ui-gmap-marker coords="map.markerHome.coords" options="map.markerHome.options" idkey="10"></ui-gmap-marker>
-      <ui-gmap-marker ng-repeat="m in map.lastPos.coords" idkey="11" coords="m" options="map.lastPos.options"></ui-gmap-marker>
-      <ui-gmap-marker ng-repeat="mk in otherLastPos" idkey="mk.id" coords="mk.coords" options="mk.options"></ui-gmap-marker>
-      <ui-gmap-markers models="markers" coords="'coords'" icon="'options.icon'" type="cluster" doCluster="true" clusterOptions="clusterOptions" click="test(id)"></ui-gmap-markers>
-      <ui-gmap-polyline ng-repeat="p in polylines" path="p.path" stroke="p.stroke" visible='p.visible' geodesic='p.geodesic' fit="false" editable="p.editable" draggable="p.draggable" icons='p.icons'></ui-gmap-polyline>
-    </ui-gmap-google-map>
+    <div class="div-wrapper">
+      <ui-gmap-google-map center='map.center' zoom='map.zoom' control='map.control' bounds='bounds' pan='true' refresh="true" ng-show="!displayed" fit="true">
+        <ui-gmap-map-control position="top-right">
+          <div class="legendebg" ng-controller="LegendCtrl">
+            <a class="legende" ng-click="toggle()">
+              <h5>Légende</h5>
+              <ul class="visible">
+                <li><img src="images/ico/ico_truck.svg" alt="" width="40px"/>Position du chauffeur</li>
+                <li><img src="images/ico/ico_liv_v.svg" alt="" width="40px"/>Livraisons conforme</li>
+                <li><img src="images/ico/ico_ram_v.svg" alt="" width="40px"/>Ramasse conforme</li>
+                <li><img src="images/ico/ico_liv_a.svg" alt="" width="40px"/>Livraison non-conforme</li>
+                <li><img src="images/ico/ico_ram_a.svg" alt="" width="40px"/>Ramasse non-conforme</li>
+                <li><img src="images/ico/ico_liv_v_m.svg" alt="" width="40px"/>Regroupement de position</li>
+              </ul>
+            </a>
+          </div>
+        </ui-gmap-map-control>
+        <ui-gmap-marker coords="map.markerHome.coords" options="map.markerHome.options" idkey="10"></ui-gmap-marker>
+        <ui-gmap-marker idkey="11" coords="map.lastPos.coords" options="map.lastPos.options"></ui-gmap-marker>
+        <ui-gmap-markers
+          models="otherLastPos"
+          events="clickEventsObject"
+          typeEvents="clusterEventsObject"
+          coords="'coords'"
+          icon="'options.icon'"
+          options="'options'"
+          control="map.markersControl"
+          type="cluster"
+          doCluster="true"
+          clusterOptions="clusterChauffeurOptions"></ui-gmap-markers>
+        <ui-gmap-markers models="markers" coords="'coords'" icon="'options.icon'" type="cluster" doCluster="true" clusterOptions="clusterOptions" click="markersClick(idClick)"></ui-gmap-markers>
+        <ui-gmap-polyline ng-repeat="p in polylines" path="p.path" stroke="p.stroke" visible='p.visible' geodesic='p.geodesic' fit="false" editable="p.editable" draggable="p.draggable" icons='p.icons'></ui-gmap-polyline>
+      </ui-gmap-google-map>
+    </div>
   </section>
   <section class="col-lg-2 col-md-2 aside">
     <v-accordion class="vAccordion--default" id="my-accordion" control="accordion">
-      <v-pane ng-repeat="m in markers" expanded="pane.isExpanded" id="{{ ::m.id }}" ng-show="m.showList" aria-controls="{{ m.id }}" ng-click="setCenter(pane.isExpanded,m.coords)">
+      <v-pane ng-repeat="box in boxesRight | orderBy : 'title'" expanded="pane.isExpanded" id="{{ ::box.title }}" aria-controls="{{ box.title }}" ng-click="boxClick(box.title)">
         <v-pane-header>
-          <h5 ng-class="m.color" ng-bind-html="(m.infowindows.info.ico)+ (m.infowindows.info.num)"></h5>
+
+          <h5 ng-bind-html="box.title"></h5>
         </v-pane-header>
         <v-pane-content>
-          <div ng-bind-html="m.infowindows.info.data"></div>
+          <div>
+            <p ng-repeat="pos in box.positions" ng-class="pos.design.color" ng-bind-html="(pos.design.ico)+(pos.info.codeano)+(' ')+(pos.info.memo)+('<br>')+(pos.data)"></p>
+          </div>
         </v-pane-content>
       </v-pane>
     </v-accordion>

@@ -1,0 +1,20 @@
+<style media="screen">
+  .angular-google-map-container{
+    height: 100vh;
+  }
+</style>
+<ui-gmap-google-map center='map.center' zoom='map.zoom' control='map.control' bounds='bounds' pan='true' refresh="true" ng-show="!displayed" fit="true">
+  <ui-gmap-marker coords="map.markerHome.coords" options="map.markerHome.options" idkey="10"></ui-gmap-marker>
+  <ui-gmap-marker ng-repeat="m in map.lastPos.coords" idkey="11" coords="m" options="map.lastPos.options"></ui-gmap-marker>
+  <ui-gmap-markers
+    models="otherLastPos"
+    events="clickEventsObject"
+    typeEvents="clusterEventsObject"
+    coords="'coords'"
+    icon="'options.icon'"
+    options="'options'"
+    control="map.markersControl"
+    type="cluster"
+    doCluster="true"
+    clusterOptions="clusterChauffeurOptions"></ui-gmap-markers>
+</ui-gmap-google-map>

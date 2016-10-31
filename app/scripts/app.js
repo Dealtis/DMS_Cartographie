@@ -19,13 +19,24 @@ angular
     'angular.filter',
     'cgBusy',
     'vAccordion'
-  ])
+  ]).value('cgBusyDefaults', {
+    message: 'Chargement ...',
+    backdrop: true,
+    templateUrl: 'views/template.html',
+    delay: 300,
+    minDuration: 700,
+  })
   .config(function($routeProvider) {
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
         controller: 'MainCtrl',
         controllerAs: 'main'
+      })
+      .when('/full', {
+        templateUrl: 'views/full.html',
+        controller: 'FullCtrl',
+        controllerAs: 'full'
       })
       .otherwise({
         redirectTo: '/'

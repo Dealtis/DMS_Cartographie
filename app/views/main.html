@@ -13,15 +13,31 @@
           </md-optgroup>
         </md-select>
       </md-input-container>
-      <md-checkbox ng-model="cb1" aria-label="Checkbox 1" ng-change="getPositionsLivraisons(selectedChauffeur,cb1,date)" ng-disabled="selectedChauffeur == null">
-        Livraisons
-      </md-checkbox>
-      <md-checkbox ng-model="cb2" aria-label="Checkbox 2" ng-change="getTrajetLivraison(selectedChauffeur,cb2,date)" ng-disabled="selectedChauffeur == null">
-        Trajet
-      </md-checkbox>
-      <md-checkbox ng-model="cb3" aria-label="Checkbox 3" ng-change="getLastPosOther(selectedChauffeur,cb3)">
-        Chauffeurs
-      </md-checkbox>
+      <div class="block_positions inline-block">
+        <div class="block_top">
+          <md-checkbox class="margbot" ng-model="cb1" aria-label="Checkbox 1" ng-change="getPositionsLivraisons(selectedChauffeur,cb1,date)" ng-disabled="selectedChauffeur == null">
+            Livraisons
+          </md-checkbox>
+        </div>
+        <div class="block_bottom">
+          <md-checkbox class="margbot" ng-model="cb4" aria-label="Checkbox 4" ng-change="getPositionsRamasses(selectedChauffeur,cb4,date)" ng-disabled="true">
+            Ramasses (soon)
+          </md-checkbox>
+        </div>
+      </div>
+      <div class="block_positions inline-block">
+        <div class="block_top">
+          <md-checkbox class="margbot" ng-model="cb2" aria-label="Checkbox 2" ng-change="getTrajetLivraison(selectedChauffeur,cb2,date)" ng-disabled="selectedChauffeur == null">
+            Trajet
+          </md-checkbox>
+        </div>
+        <div class="block_bottom">
+          <md-checkbox class="margbot" ng-model="cb3" aria-label="Checkbox 3" ng-change="getLastPosOther(selectedChauffeur,cb3)">
+            Chauffeurs
+          </md-checkbox>
+        </div>
+      </div>
+
       <md-datepicker ng-model="date" md-placeholder="Enter date" ng-disabled="selectedChauffeur == null" ng-change="getPositionsLivraisons(selectedChauffeur,cb1,date);getTrajetLivraison(selectedChauffeur,cb2,date)"></md-datepicker>
       <md-button class="md-icon-button md-raised" ng-disabled="selectedChauffeur == null" aria-label="recadre" ng-click="recadre()">
         <md-icon md-svg-icon="images/ICO/ico_fullscreen.svg"></md-icon>
@@ -70,7 +86,7 @@
           type="cluster"
           doCluster="true"
           clusterOptions="clusterChauffeurOptions"></ui-gmap-markers>
-        <ui-gmap-markers models="markers" coords="'coords'" icon="'options.icon'" type="cluster" doCluster="true" clusterOptions="clusterOptions" click="markersClick(idClick)"></ui-gmap-markers>
+        <ui-gmap-markers models="markers" coords="'coords'" options ="'options'" icon="'options.icon'" type="cluster" doCluster="true" clusterOptions="clusterOptions" click="markersClick(idClick)"></ui-gmap-markers>
         <ui-gmap-polyline ng-repeat="p in polylines" path="p.path" stroke="p.stroke" visible='p.visible' geodesic='p.geodesic' fit="false" editable="p.editable" draggable="p.draggable" icons='p.icons'></ui-gmap-polyline>
       </ui-gmap-google-map>
     </div>
@@ -79,12 +95,12 @@
     <v-accordion class="vAccordion--default" id="my-accordion" control="accordion">
       <v-pane ng-repeat="box in boxesRight | orderBy : 'title'" expanded="pane.isExpanded" id="{{ ::box.title }}" aria-controls="{{ box.title }}" ng-click="boxClick(box.title)">
         <v-pane-header>
-
           <h5 ng-bind-html="box.title"></h5>
+          <span ng-bind-html="box.positions[0].subtitle"></span>
         </v-pane-header>
         <v-pane-content>
           <div>
-            <p ng-repeat="pos in box.positions" ng-class="pos.design.color" ng-bind-html="(pos.design.ico)+(pos.info.codeano)+(' ')+(pos.info.memo)+('<br>')+(pos.data)"></p>
+            <p ng-repeat="pos in box.positions" ng-class="pos.design.color" ng-bind-html="(pos.data)+('<br>')+(pos.design.ico)+(pos.info.codeano)+(' ')+(pos.info.memo)"></p>
           </div>
         </v-pane-content>
       </v-pane>

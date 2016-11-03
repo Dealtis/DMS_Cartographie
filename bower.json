@@ -19,10 +19,12 @@
     "font-awesome": "fontawesome#^4.6.3",
     "angular-cookies": "^1.5.7",
     "angular-sanitize": "^1.5.7",
-    "components-font-awesome": "^4.6.3"
+    "components-font-awesome": "^4.6.3",
+    "konami-js": "^1.4.6"
   },
   "devDependencies": {
-    "angular-mocks": "^1.4.0"
+    "angular-mocks": "^1.4.0",
+    "konami-js": "^1.4.6"
   },
   "appPath": "app",
   "moduleName": "dmsCartoApp",

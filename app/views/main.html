@@ -1,6 +1,31 @@
 <div class="">
   <section class="col-lg-10 col-md-10" cg-busy='loading'>
     <div>
+      <md-menu>
+        <md-button aria-label="Open menu" class="md-icon-button main" ng-click="openMenu($mdOpenMenu, $event)">
+        <md-icon md-svg-icon="images/ico_dark.svg"></md-icon>
+        </md-button>
+        <md-menu-content width="4">
+          <md-menu-item>
+            <p>
+              DMSCARTO© v1.0.0
+            </p>
+          </md-menu-item>
+          <md-menu-divider></md-menu-divider>
+          <md-menu-item>
+            <md-button ng-disabled="true">
+              <md-icon md-svg-icon="images/ICO/idea.svg" md-menu-align-target ></md-icon>
+              Une suggestion ? (soon)
+            </md-button>
+          </md-menu-item>
+          <md-menu-item>
+            <md-button ng-disabled="true">
+              <md-icon md-svg-icon="images/ICO/bug.svg" md-menu-align-target ></md-icon>
+              Signaler un bug (soon)
+            </md-button>
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
       <md-input-container>
         <label>Chauffeurs</label>
         <md-select ng-model="selectedChauffeur" md-on-close="clearSearchTerm()" data-md-container-class="selectdemoSelectHeader">
@@ -15,30 +40,30 @@
       </md-input-container>
       <div class="block_positions inline-block">
         <div class="block_top">
-          <md-checkbox class="margbot" ng-model="cb1" aria-label="Checkbox 1" ng-change="getPositionsLivraisons(selectedChauffeur,cb1,date)" ng-disabled="selectedChauffeur == null">
+          <md-checkbox class="margbot md-primary" ng-model="cb1" aria-label="Checkbox 1" ng-change="getPositionsLivraisons(selectedChauffeur,cb1,date)" ng-disabled="selectedChauffeur == null">
             Livraisons
           </md-checkbox>
         </div>
         <div class="block_bottom">
-          <md-checkbox class="margbot" ng-model="cb4" aria-label="Checkbox 4" ng-change="getPositionsRamasses(selectedChauffeur,cb4,date)" ng-disabled="true">
-            Ramasses (soon)
+          <md-checkbox class="margbot md-primary" ng-model="cb4" aria-label="Checkbox 4" ng-change="getPositionsRamasses(selectedChauffeur,cb4,date)" ng-disabled="selectedChauffeur == null">
+            Ramasses
           </md-checkbox>
         </div>
       </div>
       <div class="block_positions inline-block">
         <div class="block_top">
-          <md-checkbox class="margbot" ng-model="cb2" aria-label="Checkbox 2" ng-change="getTrajetLivraison(selectedChauffeur,cb2,date)" ng-disabled="selectedChauffeur == null">
+          <md-checkbox class="margbot md-primary" ng-model="cb2" aria-label="Checkbox 2" ng-change="getTrajetLivraison(selectedChauffeur,cb2,date)" ng-disabled="selectedChauffeur == null">
             Trajet
           </md-checkbox>
         </div>
         <div class="block_bottom">
-          <md-checkbox class="margbot" ng-model="cb3" aria-label="Checkbox 3" ng-change="getLastPosOther(selectedChauffeur,cb3)">
+          <md-checkbox class="margbot md-primary" ng-model="cb3" aria-label="Checkbox 3" ng-change="getLastPosOther(selectedChauffeur,cb3)">
             Chauffeurs
           </md-checkbox>
         </div>
       </div>
 
-      <md-datepicker ng-model="date" md-placeholder="Enter date" ng-disabled="selectedChauffeur == null" ng-change="getPositionsLivraisons(selectedChauffeur,cb1,date);getTrajetLivraison(selectedChauffeur,cb2,date)"></md-datepicker>
+      <md-datepicker ng-model="date" md-placeholder="Enter date" ng-disabled="selectedChauffeur == null" ng-change="dateChange()"></md-datepicker>
       <md-button class="md-icon-button md-raised" ng-disabled="selectedChauffeur == null" aria-label="recadre" ng-click="recadre()">
         <md-icon md-svg-icon="images/ICO/ico_fullscreen.svg"></md-icon>
         <md-tooltip md-direction="bottom">
@@ -52,7 +77,7 @@
         </md-tooltip>
       </md-button>
       <md-switch ng-model="sw1" aria-label="Switch 1" ng-change="reloadAuto(selectedChauffeur,cb1,cb2,cb3,sw1,date)">
-        Auto reload
+        Auto refresh
       </md-switch>
       <md-progress-circular md-mode="indeterminate" ng-hide="!loadingPrdict"></md-progress-circular>
     </div>
@@ -86,7 +111,8 @@
           type="cluster"
           doCluster="true"
           clusterOptions="clusterChauffeurOptions"></ui-gmap-markers>
-        <ui-gmap-markers models="markers" coords="'coords'" options ="'options'" icon="'options.icon'" type="cluster" doCluster="true" clusterOptions="clusterOptions" click="markersClick(idClick)"></ui-gmap-markers>
+        <ui-gmap-markers models="markers" coords="'coords'" options="'options'" icon="'options.icon'" type="cluster" doCluster="true" clusterOptions="clusterOptions" click="markersClick(idClick)"></ui-gmap-markers>
+        <ui-gmap-markers models="markersRam" coords="'coords'" options="'options'" icon="'options.icon'" type="cluster" doCluster="true" clusterOptions="clusterOptions" click="markersClick(idClick)"></ui-gmap-markers>
         <ui-gmap-polyline ng-repeat="p in polylines" path="p.path" stroke="p.stroke" visible='p.visible' geodesic='p.geodesic' fit="false" editable="p.editable" draggable="p.draggable" icons='p.icons'></ui-gmap-polyline>
       </ui-gmap-google-map>
     </div>

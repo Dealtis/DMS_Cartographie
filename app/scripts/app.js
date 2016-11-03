@@ -48,3 +48,7 @@ angular
       libraries: 'weather,geometry,visualization'
     });
   });
+
+  var easter_egg = new Konami(function() {
+    document.body.style.background = "#f3f3f3 url('http://i.giphy.com/B3hcUhLX3BFHa.gif') no-repeat right top";
+  });

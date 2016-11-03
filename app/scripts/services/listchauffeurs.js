@@ -20,6 +20,9 @@ angular.module('dmsCartoApp')
       console.log(url+'dmsPos?val='+chauffeur+"&date="+date);
       return $http.get(url+'dmsPos?val='+chauffeur+"&date="+date);
     };
+    this.loadPositionsRamasses = function (chauffeur,date) {
+      return $http.get(url+'dmsRam?val='+chauffeur+"&date="+date);
+    };
     this.loadPositionsGPS = function(chauffeur, date) {
       return $http.get(url + 'dmsTrajet?val=' + chauffeur + "&date=" + date);
     };

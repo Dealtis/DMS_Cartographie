@@ -9,19 +9,19 @@
  * Controller of the dmsCartoApp
  */
 angular.module('dmsCartoApp')
-  .controller('MainCtrl', function($scope, $mdToast, uiGmapGoogleMapApi, $q, $interval, $location, apiDMSCARTO, $cookies) {
+  .controller('MainCtrl', function($scope, $mdToast, uiGmapGoogleMapApi, $q, $interval, $location, $mdDialog, apiDMSCARTO, $cookies) {
     $scope.splashscreen = "<div class='sk-wave'><div class='sk-rect sk-rect1'></div><div class='sk-rect sk-rect2'></div><div class='sk-rect sk-rect3'></div><div class='sk-rect sk-rect4'></div><div class='sk-rect sk-rect5'></div></div>";
 
-    //TODO
-    // if ($cookies.get('SOCID') == undefined) {
-    //   $scope.splashscreen = "Merci de vous connecter à Andsoft";
-    //   var LoadingScreen = window.pleaseWait({
-    //     logo: 'images/ICO/ico_home.svg',
-    //     backgroundColor: '#4CDEBA',
-    //     loadingHtml: $scope.splashscreen
-    //   });
-    //   throw console.error("Pas de soc ID");
-    // }
+    // //TODO
+    if ($cookies.get('SOCID') == undefined) {
+      $scope.splashscreen = "Merci de vous connecter à Andsoft";
+      var LoadingScreen = window.pleaseWait({
+        logo: 'images/ICO/ico_home.svg',
+        backgroundColor: '#4CDEBA',
+        loadingHtml: $scope.splashscreen
+      });
+      throw console.error("Pas de soc ID");
+    }
 
     var LoadingScreen = window.pleaseWait({
       logo: 'images/ICO/ico_home.svg',
@@ -40,19 +40,20 @@ angular.module('dmsCartoApp')
     $scope.date = new Date();
     var addmarker;
     //init
-    angular.fromJson(apiDMSCARTO.loadChauffeurs('3'))
+    angular.fromJson(apiDMSCARTO.loadChauffeurs($cookies.get('SOCID')))
       .then(function(response) {
         $scope.chauffeurs = response.data;
       });
     var gpsSocPos = [];
     var gpsSocPosLong = [];
     $scope.markers = [];
+    $scope.markersRam = [];
     $scope.boxesRight = [];
     $scope.otherLastPos = [];
     $scope.TrajetPath = [];
     $scope.loadingPrdict = false;
     $scope.boundsMarkers = new google.maps.LatLngBounds();
-    angular.fromJson(apiDMSCARTO.loadSocposition('3'))
+    angular.fromJson(apiDMSCARTO.loadSocposition($cookies.get('SOCID')))
       .then(function(response) {
         var socPosition = response.data;
         gpsSocPos = socPosition[0].SOCGOOGLEMAP.split(",");
@@ -144,6 +145,32 @@ angular.module('dmsCartoApp')
       }
     });
 
+    $scope.dateChange = function() {
+      if ($scope.selectedChauffeur === undefined) {} else {
+        //reset de la map
+        $scope.markers = [];
+        $scope.markersRam = [];
+        $scope.boxesRight = [];
+        $scope.polylines = [];
+        $scope.boundsMarkers = new google.maps.LatLngBounds();
+
+        $scope.getLastPos($scope.selectedChauffeur, $scope.date);
+        //si des checkbox sont cochés
+        if ($scope.cb1) {
+          $scope.getPositionsLivraisons($scope.selectedChauffeur, $scope.cb1, $scope.date);
+        }
+        if ($scope.cb4) {
+          $scope.getPositionsRamasses($scope.selectedChauffeur, $scope.cb4, $scope.date);
+        }
+        if ($scope.cb2) {
+          $scope.getTrajetLivraison($scope.selectedChauffeur, $scope.cb2, $scope.date);
+        }
+        if ($scope.cb3) {
+          $scope.getLastPosOther($scope.selectedChauffeur, $scope.cb3);
+        }
+      }
+    }
+
     angular.element(document).find('input').on('keydown', function(ev) {
       ev.stopPropagation();
     });
@@ -227,7 +254,7 @@ angular.module('dmsCartoApp')
                     find = _.find(boxRight, {
                       'title': pos.info.nomclient
                     });
-                    pos.data = pos.info.livnom + ", " + pos.info.livadr + pos.info.livcp + " " + pos.info.livville;
+                    pos.data = pos.info.expnom + ", " + pos.info.expadr + pos.info.expcp + " " + pos.info.expville;
                     traitBox(box, pos.info.nomclient);
                     pos.idClick = pos.info.nomclient;
                     $scope.markers.push(pos);
@@ -237,7 +264,7 @@ angular.module('dmsCartoApp')
                     });
                     pos.idClick = pos.info.nomclient;
                     pos.subtitle = pos.info.livville;
-                    pos.data = pos.info.expnom + ", " + pos.info.expadr + pos.info.expcp + " " + pos.info.expville;
+                    pos.data = pos.info.livnom + ", " + pos.info.livadr + pos.info.livcp + " " + pos.info.livville;
                     traitBox(find, pos.info.nomclient);
                   }
 
@@ -368,22 +395,22 @@ angular.module('dmsCartoApp')
 
     //get Ramasses du chauffeur
     $scope.getPositionsRamasses = function(chauffeur, bool, date) {
-      $scope.markers = [];
+      $scope.markersRam = [];
       $scope.positions = [];
       try {
         if (bool) {
           var dateformat = convertDate(date);
           console.log(chauffeur.SALCODE.substring(1, chauffeur.SALCODE.length));
-          $scope.loading = angular.fromJson(apiDMSCARTO.loadPositionsLivraions(chauffeur.SALCODE.substring(1, chauffeur.SALCODE.length), dateformat))
+          $scope.loading = angular.fromJson(apiDMSCARTO.loadPositionsRamasses(chauffeur.SALCODE.substring(1, chauffeur.SALCODE.length), dateformat))
             .then(function(response) {
               if (response.data.length === 0) {
                 var toast = $mdToast.simple()
-                  .textContent('Pas de données de livraisons')
+                  .textContent('Pas de données de ramasses')
                   .action('X')
                   .highlightAction(true) // Accent is used by default, this just demonstrates the usage.
                   .position('top right');
                 $mdToast.show(toast).then(function() {});
-                console.log("Pas de données de livraisons");
+                console.log("Pas de données de ramasses");
                 var diff = dateDiff(date, Date.now());
                 if (diff.day == 0) {
                   //predictPos($scope.markers);
@@ -443,17 +470,17 @@ angular.module('dmsCartoApp')
                     find = _.find(boxRight, {
                       'title': pos.info.nomclient
                     });
-                    pos.data = pos.info.livnom + ", " + pos.info.livadr + pos.info.livcp + " " + pos.info.livville;
+                    pos.data = pos.info.expnom + ", " + pos.info.expadr + pos.info.expcp + " " + pos.info.expville;
                     traitBox(box, pos.info.nomclient);
                     pos.idClick = pos.info.nomclient;
-                    $scope.markers.push(pos);
+                    $scope.markersRam.push(pos);
                   } else {
                     find = _.find($scope.boxesRight, {
                       'title': pos.info.nomclient
                     });
                     pos.idClick = pos.info.nomclient;
                     pos.subtitle = pos.info.livville;
-                    pos.data = pos.info.expnom + ", " + pos.info.expadr + pos.info.expcp + " " + pos.info.expville;
+                    pos.data = pos.info.livnom + ", " + pos.info.livadr + pos.info.livcp + " " + pos.info.livville;
                     traitBox(find, pos.info.nomclient);
                   }
 
@@ -470,7 +497,7 @@ angular.module('dmsCartoApp')
                       find.positions.push(pos);
                     }
                   }
-                  $scope.markers.push(pos);
+                  $scope.markersRam.push(pos);
                 });
 
                 $scope.bounds = {
@@ -492,7 +519,7 @@ angular.module('dmsCartoApp')
               }
             });
         } else {
-          $scope.markers = [];
+          $scope.markersRam = [];
           $scope.boxesRight = [];
           $scope.boundsMarkers = new google.maps.LatLngBounds();
         }
@@ -581,7 +608,6 @@ angular.module('dmsCartoApp')
 
     //get Trajet du chauffeur
     $scope.getTrajetLivraison = function(chauffeur, bool, date) {
-      console.log("Hello from trajet");
       if (bool) {
         var dateformat = convertDate(date);
         //loadPositionsGPS
@@ -591,7 +617,9 @@ angular.module('dmsCartoApp')
               var gpsSplit = datagps.DGPPOSITION.split("|");
               var posgpsSplit = [];
               for (var j = 0; j < gpsSplit.length; j++) {
-                posgpsSplit.push(gpsSplit[j].replace(",", ".").replace(",", "."));
+                if (gpsSplit[j] != "") {
+                  posgpsSplit.push(gpsSplit[j].replace(",", ".").replace(",", "."));
+                }
               }
               $scope.TrajetPath = [];
               angular.forEach(posgpsSplit, function(gps) {
@@ -984,11 +1012,17 @@ angular.module('dmsCartoApp')
           $scope.getPositionsLivraisons($scope.selectedChauffeur, $scope.cb1, $scope.date);
         }
         if ($scope.cb2) {
-          $scope.getTrajetLivraison($scope.selectedChauffeur, $scope.cb2,$scope.date);
+          $scope.getTrajetLivraison($scope.selectedChauffeur, $scope.cb2, $scope.date);
         }
         if ($scope.cb3) {
           $scope.getLastPosOther($scope.selectedChauffeur, $scope.cb3);
         }
       }
     }
+
+    var originatorEv;
+    $scope.openMenu = function($mdOpenMenu, ev) {
+      originatorEv = ev;
+      $mdOpenMenu(ev);
+    };
   });

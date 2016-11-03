@@ -11,7 +11,8 @@
   padding: 0.2em 0;
 }
 
-html, body {
+body,
+html {
   height: 100%;
 }
 
@@ -98,18 +99,34 @@ body {
 .none {
   display: none;
 }
-.inline-block{
+
+.inline-block {
   display: inline-block;
 }
-.block_positions{
+
+.block_positions {
   vertical-align: middle;
-  .md-icon{
+
+  .md-icon {
     transform: scale(0.8);
   }
 }
-.margbot{
-  margin-bottom: 0px;
+
+.md-icon-button {
+  &.main {
+    height: 50px;
+    width: 50px;
+    md-icon {
+      height: 34px;
+      width: 34px;
+    }
+  }
 }
+
+.margbot {
+  margin-bottom: 0;
+}
+
 .loading,
 md-progress-circular {
   display: inline-block;

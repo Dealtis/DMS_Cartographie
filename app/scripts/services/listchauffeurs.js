@@ -39,4 +39,11 @@ angular.module('dmsCartoApp')
       return $http.get("https://maps.googleapis.com/maps/api/geocode/json?address="+_.replace(nom,new RegExp(" ","g"),"+")+","+_.replace(adr,new RegExp(" ","g"),"+")+","+cp+","+_.replace(ville,new RegExp(" ","g"),"+"));
     };
 
+    this.getInfoTournee = function(nom, date){
+      return $http.get(url + 'dmsGaugeChauff?val=' + nom + "&date=" + date);
+    };
+
+    this.getInfoTourneeSociete = function(socid, date){
+        return $http.get(url + 'dmsGauge?val=' + socid + "&date=" + date);
+      }
   });

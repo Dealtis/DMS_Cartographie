@@ -1,8 +1,7 @@
 // bower:scss
 @import "bourbon/app/assets/stylesheets/_bourbon.scss";
 @import "font-awesome/scss/font-awesome.scss";
-@import "components-font-awesome/scss/font-awesome.scss";
-// endbower
+@import "components-font-awesome/scss/font-awesome.scss"; // endbower
 
 .browsehappy {
   margin: 0.2em 0;
@@ -54,6 +53,68 @@ body {
 .aside {
   max-height: 100vh;
   overflow-x: auto;
+
+  .gauge_selectChauff {
+    padding: 5px;
+    &.main{
+      background-color: #64b5f6;
+    }
+    -moz-box-shadow: 0 0 5px 0 #656565;
+    -webkit-box-shadow: 0 0 5px 0 #656565;
+    -o-box-shadow: 0 0 5px 0 #656565;
+    box-shadow: 0 0 5px 0 #656565;
+    filter:progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=NaN, Strength=5);
+    margin-bottom: 5px;
+
+    p {
+      margin: 0;
+    }
+
+    .gauge {
+      width: 60%;
+      display: inline-block;
+
+      .num_box {
+        margin-bottom: -10px;
+      }
+
+      p {
+        display: inline-block;
+
+        &:first-of-type {
+          padding-right: 60px;
+        }
+        font-size: 9px;
+      }
+    }
+
+    span {
+      &.inline {
+        &:first-of-type {
+          margin-right: 1px;
+        }
+        display: inline-block;
+      }
+      font-size: 10px;
+    }
+
+    md-progress-linear {
+      display: inline-block;
+      width: 70%;
+    }
+
+    .liv {
+      .md-bar2 {
+        background-color: #4caf50;
+      }
+    }
+
+    .ram {
+      .md-bar2 {
+        background-color: #ffc107;
+      }
+    }
+  }
 }
 
 .green {
@@ -102,6 +163,22 @@ body {
 
 .inline-block {
   display: inline-block;
+  vertical-align: middle;
+}
+
+.switch_auto {
+  display: block;
+  margin: 0;
+}
+
+.btn_msg {
+  min-height: 23px;
+  min-width: 46px;
+  font-size: 10px;
+  line-height: 0;
+  margin: 0;
+  width: 100%;
+  background-color: #cddc39;
 }
 
 .block_positions {
@@ -116,6 +193,7 @@ body {
   &.main {
     height: 50px;
     width: 50px;
+
     md-icon {
       height: 34px;
       width: 34px;

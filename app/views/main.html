@@ -3,7 +3,7 @@
     <div>
       <md-menu>
         <md-button aria-label="Open menu" class="md-icon-button main" ng-click="openMenu($mdOpenMenu, $event)">
-        <md-icon md-svg-icon="images/ico_dark.svg"></md-icon>
+          <md-icon md-svg-icon="images/ico_dark.svg"></md-icon>
         </md-button>
         <md-menu-content width="4">
           <md-menu-item>
@@ -14,13 +14,13 @@
           <md-menu-divider></md-menu-divider>
           <md-menu-item>
             <md-button ng-disabled="true">
-              <md-icon md-svg-icon="images/ICO/idea.svg" md-menu-align-target ></md-icon>
+              <md-icon md-svg-icon="images/ICO/idea.svg" md-menu-align-target></md-icon>
               Une suggestion ? (soon)
             </md-button>
           </md-menu-item>
           <md-menu-item>
             <md-button ng-disabled="true">
-              <md-icon md-svg-icon="images/ICO/bug.svg" md-menu-align-target ></md-icon>
+              <md-icon md-svg-icon="images/ICO/bug.svg" md-menu-align-target></md-icon>
               Signaler un bug (soon)
             </md-button>
           </md-menu-item>
@@ -34,7 +34,7 @@
           </md-select-header>
           <md-optgroup label="Chauffeurs">
             <md-option ng-value="chauffeur" ng-repeat="chauffeur in chauffeurs |
-          filter:searchTerm">{{chauffeur.SALCODE}}</md-option>
+          filter:searchTerm">{{chauffeur.SALNOM}}</md-option>
           </md-optgroup>
         </md-select>
       </md-input-container>
@@ -62,7 +62,6 @@
           </md-checkbox>
         </div>
       </div>
-
       <md-datepicker ng-model="date" md-placeholder="Enter date" ng-disabled="selectedChauffeur == null" ng-change="dateChange()"></md-datepicker>
       <md-button class="md-icon-button md-raised" ng-disabled="selectedChauffeur == null" aria-label="recadre" ng-click="recadre()">
         <md-icon md-svg-icon="images/ICO/ico_fullscreen.svg"></md-icon>
@@ -76,9 +75,16 @@
           Recharger la carte
         </md-tooltip>
       </md-button>
-      <md-switch ng-model="sw1" aria-label="Switch 1" ng-change="reloadAuto(selectedChauffeur,cb1,cb2,cb3,sw1,date)">
-        Auto refresh
-      </md-switch>
+      <div class="inline-block">
+        <md-switch class="switch_auto" ng-model="sw1" aria-label="Switch 1" ng-change="reloadAuto(selectedChauffeur,cb1,cb2,cb3,sw1,date)">
+          Rafraîchissement auto
+        </md-switch>
+        <md-button ng-disabled="selectedChauffeur == null" class="btn_msg">Message
+          <md-tooltip md-direction="bottom">
+            Envoyer un message
+          </md-tooltip>
+        </md-button>
+      </div>
       <md-progress-circular md-mode="indeterminate" ng-hide="!loadingPrdict"></md-progress-circular>
     </div>
     <div class="div-wrapper">
@@ -118,15 +124,76 @@
     </div>
   </section>
   <section class="col-lg-2 col-md-2 aside">
+    <div class="gauge_selectChauff main" ng-hide="infoTournee == null">
+      <p>{{selectedChauffeur.SALCODE}}</p>
+      <div ng-hide="infoTournee.livTot == 0">
+        <span class="inline">Livraisons</span>
+        <div class="gauge">
+          <div class="num_box">
+            <p>
+              {{infoTournee.liv}}
+            </p>
+            <p>
+              {{infoTournee.livTot}}
+            </p>
+          </div>
+          <md-progress-linear class="liv" md-mode="determinate" value="{{infoTournee.livPercent}}"></md-progress-linear>
+        </div>
+      </div>
+      <div ng-hide="infoTournee.ramTot == 0">
+        <span class="inline">Ramasses</span>
+        <div class="gauge">
+          <div class="num_box">
+            <p>
+              {{infoTournee.ram}}
+            </p>
+            <p>
+              {{infoTournee.ramTot}}
+            </p>
+          </div>
+          <md-progress-linear class="liv" md-mode="determinate" value="{{infoTournee.ramPercent}}"></md-progress-linear>
+        </div>
+      </div>
+    </div>
+    <div class="gauge_selectChauff" ng-repeat="box in boxesGauge">
+      <p>{{box.chauff}}</p>
+      <div ng-hide="box.gauges.livTot == 0">
+        <span class="inline">Livraisons</span>
+        <div class="gauge">
+          <div class="num_box">
+            <p>
+              {{box.gauges.liv}}
+            </p>
+            <p>
+              {{box.gauges.livTot}}
+            </p>
+          </div>
+          <md-progress-linear class="liv" md-mode="determinate" value="{{box.gauges.livPercent}}"></md-progress-linear>
+        </div>
+      </div>
+      <div ng-hide="box.gauges.ramTot == 0">
+        <span class="inline">Ramasses</span>
+        <div class="gauge">
+          <div class="num_box">
+            <p>
+              {{box.gauges.ram}}
+            </p>
+            <p>
+              {{box.gauges.ramTot}}
+            </p>
+          </div>
+          <md-progress-linear class="liv" md-mode="determinate" value="{{box.gauges.ramPercent}}"></md-progress-linear>
+        </div>
+      </div>
+    </div>
     <v-accordion class="vAccordion--default" id="my-accordion" control="accordion">
       <v-pane ng-repeat="box in boxesRight | orderBy : 'title'" expanded="pane.isExpanded" id="{{ ::box.title }}" aria-controls="{{ box.title }}" ng-click="boxClick(box.title)">
         <v-pane-header>
           <h5 ng-bind-html="box.title"></h5>
-          <span ng-bind-html="box.positions[0].subtitle"></span>
         </v-pane-header>
         <v-pane-content>
           <div>
-            <p ng-repeat="pos in box.positions" ng-class="pos.design.color" ng-bind-html="(pos.data)+('<br>')+(pos.design.ico)+(pos.info.codeano)+(' ')+(pos.info.memo)"></p>
+            <p ng-repeat="pos in box.positions" ng-class="pos.design.color" ng-bind-html="(pos.data)+('<br>')+(pos.design.ico)+(pos.info.codeano)+(' ')+(pos.info.memo)+('<br>')+(pos.info.nomclient)+(' ')+(pos.numpos)"></p>
           </div>
         </v-pane-content>
       </v-pane>

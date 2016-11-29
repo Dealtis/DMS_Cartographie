@@ -17,6 +17,18 @@ html {
 
 body {
   padding: 0;
+  background: rgba(54,209,165,0.8);
+  background: -moz-linear-gradient(-45deg, rgba(54,209,165,0.8) 0%, rgba(100,180,246,0.8) 100%);
+  background: -webkit-gradient(left top, right bottom, color-stop(0%, rgba(54,209,165,0.8)), color-stop(100%, rgba(100,180,246,0.8)));
+  background: -webkit-linear-gradient(-45deg, rgba(54,209,165,0.8) 0%, rgba(100,180,246,0.8) 100%);
+  background: -o-linear-gradient(-45deg, rgba(54,209,165,0.8) 0%, rgba(100,180,246,0.8) 100%);
+  background: -ms-linear-gradient(-45deg, rgba(54,209,165,0.8) 0%, rgba(100,180,246,0.8) 100%);
+  background: linear-gradient(135deg, rgba(54,209,165,0.8) 0%, rgba(100,180,246,0.8) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=  '#36d1a5', endColorstr='#64b4f6', GradientType=1 );
+}
+
+.main_container {
+  height: 100vh;
 }
 
 .angular-google-map-container {
@@ -51,13 +63,34 @@ body {
 }
 
 .aside {
-  max-height: 100vh;
+  height: 100vh;
   overflow-x: auto;
+
+  &.full {
+    position: fixed;
+    top: 0;
+    right: 0;
+  }
+
+  .gauges_column {
+    display: inline-block;
+    vertical-align: top;
+    width: 180px;
+  }
 
   .gauge_selectChauff {
     padding: 5px;
-    &.main{
-      background-color: #64b5f6;
+    background-color: #009688;
+    color: white;
+
+    h5 {
+      margin: 0;
+    }
+
+    &.main {
+      padding-top: 15px;
+      background-color: #00897b;
+      color: #ffffff;
     }
     -moz-box-shadow: 0 0 5px 0 #656565;
     -webkit-box-shadow: 0 0 5px 0 #656565;
@@ -80,6 +113,7 @@ body {
 
       p {
         display: inline-block;
+        font-weight: bold;
 
         &:first-of-type {
           padding-right: 60px;
@@ -118,7 +152,7 @@ body {
 }
 
 .green {
-  color: green;
+  color: #2e7d32;
 
   &.underline {
     font-weight: bold;
@@ -126,7 +160,7 @@ body {
 }
 
 .red {
-  color: red;
+  color: #b71c1c;
 
   &.underline {
     font-weight: bold;
@@ -175,10 +209,11 @@ body {
   min-height: 23px;
   min-width: 46px;
   font-size: 10px;
-  line-height: 0;
+  line-height: 25px;
   margin: 0;
   width: 100%;
-  background-color: #cddc39;
+  background-color: #00695c;
+  color: white;
 }
 
 .block_positions {
@@ -187,6 +222,13 @@ body {
   .md-icon {
     transform: scale(0.8);
   }
+}
+
+md-checkbox .md-container:after {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .md-icon-button {
@@ -251,6 +293,12 @@ md-switch {
   vertical-align: -webkit-baseline-middle;
 }
 
+.vAccordion--default {
+  h5 {
+    color: #424242;
+  }
+}
+
 .legendebg {
   text-decoration: none;
   background-color: white;
@@ -287,5 +335,11 @@ md-switch {
         padding-right: 8px;
       }
     }
+  }
+}
+//IE FIX
+@media screen and (min-width:0\0) {
+  md-select .md-select-icon {
+    float: right;
   }
 }

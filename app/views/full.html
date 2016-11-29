@@ -1,7 +1,8 @@
 <style media="screen">
-  .angular-google-map-container{
+  .angular-google-map-container {
     height: 100vh;
   }
+
 </style>
 <ui-gmap-google-map center='map.center' zoom='map.zoom' control='map.control' bounds='bounds' pan='true' refresh="true" ng-show="!displayed" fit="true">
   <ui-gmap-marker coords="map.markerHome.coords" options="map.markerHome.options" idkey="10"></ui-gmap-marker>
@@ -18,3 +19,38 @@
     doCluster="true"
     clusterOptions="clusterChauffeurOptions"></ui-gmap-markers>
 </ui-gmap-google-map>
+<section class="aside full">
+  <div class="gauges_column" ng-repeat="column in chunkedboxesGauge">
+    <div class="gauge_selectChauff" ng-repeat="box in column">
+      <p>{{box.chauff}}</p>
+      <div ng-hide="box.gauges.livTot == 0">
+        <span class="inline">Livraisons</span>
+        <div class="gauge">
+          <div class="num_box">
+            <p>
+              {{box.gauges.liv}}
+            </p>
+            <p>
+              {{box.gauges.livTot}}
+            </p>
+          </div>
+          <md-progress-linear class="liv" md-mode="determinate" value="{{box.gauges.livPercent}}"></md-progress-linear>
+        </div>
+      </div>
+      <div ng-hide="box.gauges.ramTot == 0">
+        <span class="inline">Ramasses</span>
+        <div class="gauge">
+          <div class="num_box">
+            <p>
+              {{box.gauges.ram}}
+            </p>
+            <p>
+              {{box.gauges.ramTot}}
+            </p>
+          </div>
+          <md-progress-linear class="liv" md-mode="determinate" value="{{box.gauges.ramPercent}}"></md-progress-linear>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

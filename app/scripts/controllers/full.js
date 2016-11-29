@@ -30,8 +30,24 @@ angular.module('dmsCartoApp')
       .then(function(response) {
         $scope.chauffeurs = response.data;
         $scope.getLastPosOther(null, true);
-        $scope.reloadAuto();
+        //$scope.reloadAuto();
       });
+
+    function convertDate(inputFormat) {
+      function pad(s) {
+        return (s < 10) ? '0' + s : s;
+      }
+      var d = new Date(inputFormat);
+      return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('/');
+    }
+
+    function chunk(arr, size) {
+      var newArr = [];
+      for (var i = 0; i < arr.length; i += size) {
+        newArr.push(arr.slice(i, i + size));
+      }
+      return newArr;
+    }
 
     angular.fromJson(apiDMSCARTO.loadSocposition('3'))
       .then(function(response) {
@@ -161,6 +177,52 @@ angular.module('dmsCartoApp')
           }, 800);
         }, function(reason) {
           alert('Failed: ' + reason);
+        });
+
+      angular.fromJson(apiDMSCARTO.getInfoTourneeSociete('3', convertDate(Date.now())))
+        .then(function(response) {
+          $scope.boxesGauge = [];
+          console.log(response.data);
+
+          angular.forEach(response.data, function(gauge) {
+            var find = _.find($scope.boxesGauge, {
+              'chauff': gauge.codeChauffeur
+            });
+            if (find == undefined) {
+              var newbox = {
+                chauff: gauge.codeChauffeur,
+                gauges: {
+                  liv: 0,
+                  livTot: 0,
+                  ram: 0,
+                  ramTot: 0
+                }
+              }
+              if (gauge.typeMission == "LIV") {
+                newbox.gauges.liv = gauge.nbFait,
+                  newbox.gauges.livTot = gauge.nbPos,
+                  newbox.gauges.livPercent = (parseInt(gauge.nbFait) * 100) / parseInt(gauge.nbPos)
+              } else {
+                newbox.gauges.ram = gauge.nbFait,
+                  newbox.gauges.ramTot = gauge.nbPos,
+                  newbox.gauges.ramPercent = (parseInt(gauge.nbFait) * 100) / parseInt(gauge.nbPos)
+              }
+              $scope.boxesGauge.push(newbox);
+
+            } else {
+              if (gauge.typeMission == "LIV") {
+                find.gauges.liv = gauge.nbFait,
+                  find.gauges.livTot = gauge.nbPos,
+                  find.gauges.livPercent = (parseInt(gauge.nbFait) * 100) / parseInt(gauge.nbPos)
+              } else {
+                find.gauges.ram = gauge.nbFait,
+                  find.gauges.ramTot = gauge.nbPos,
+                  find.gauges.ramPercent = (parseInt(gauge.nbFait) * 100) / parseInt(gauge.nbPos)
+              }
+            }
+          });
+          $scope.chunkedboxesGauge = chunk($scope.boxesGauge, 8);
+          console.log($scope.chunkedboxesGauge);
         });
     }
     $scope.reloadAuto = function() {

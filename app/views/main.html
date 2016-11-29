@@ -1,5 +1,5 @@
 <div class="">
-  <section class="col-lg-10 col-md-10" cg-busy='loading'>
+  <section class="main_container col-lg-10 col-md-10" cg-busy='loading'>
     <div>
       <md-menu>
         <md-button aria-label="Open menu" class="md-icon-button main" ng-click="openMenu($mdOpenMenu, $event)">
@@ -79,12 +79,18 @@
         <md-switch class="switch_auto" ng-model="sw1" aria-label="Switch 1" ng-change="reloadAuto(selectedChauffeur,cb1,cb2,cb3,sw1,date)">
           Rafraîchissement auto
         </md-switch>
-        <md-button ng-disabled="selectedChauffeur == null" class="btn_msg">Message
+        <md-button ng-disabled="selectedChauffeur == null" class="btn_msg" target='_blank' ng-href="http://10.1.2.67/INC/EXPLOIT/DMS/DMSMESSAGE_F0FRM.ASP?FRMMode=C&CODECHAUFFEUR={{selectedChauffeur.SALCODE}}">Message
           <md-tooltip md-direction="bottom">
             Envoyer un message
           </md-tooltip>
         </md-button>
       </div>
+      <md-button class="md-icon-button md-raised md-warn" ng-click="showAlert($event)">
+        <md-icon md-svg-icon="images/ICO/info.svg"></md-icon>
+        <md-tooltip md-direction="bottom">
+          Aide
+        </md-tooltip>
+      </md-button>
       <md-progress-circular md-mode="indeterminate" ng-hide="!loadingPrdict"></md-progress-circular>
     </div>
     <div class="div-wrapper">
@@ -125,7 +131,7 @@
   </section>
   <section class="col-lg-2 col-md-2 aside">
     <div class="gauge_selectChauff main" ng-hide="infoTournee == null">
-      <p>{{selectedChauffeur.SALCODE}}</p>
+      <h5>{{selectedChauffeur.SALCODE}}</h5>
       <div ng-hide="infoTournee.livTot == 0">
         <span class="inline">Livraisons</span>
         <div class="gauge">
@@ -151,7 +157,7 @@
               {{infoTournee.ramTot}}
             </p>
           </div>
-          <md-progress-linear class="liv" md-mode="determinate" value="{{infoTournee.ramPercent}}"></md-progress-linear>
+          <md-progress-linear class="ram" md-mode="determinate" value="{{infoTournee.ramPercent}}"></md-progress-linear>
         </div>
       </div>
     </div>

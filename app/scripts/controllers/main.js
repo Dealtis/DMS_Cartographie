@@ -1,4 +1,4 @@
-'use strict';
+//'use strict';
 
 
 /**
@@ -12,16 +12,16 @@ angular.module('dmsCartoApp')
   .controller('MainCtrl', function($scope, $mdToast, uiGmapGoogleMapApi, $q, $interval, $location, $mdDialog, apiDMSCARTO, $cookies) {
     $scope.splashscreen = "<div class='sk-wave'><div class='sk-rect sk-rect1'></div><div class='sk-rect sk-rect2'></div><div class='sk-rect sk-rect3'></div><div class='sk-rect sk-rect4'></div><div class='sk-rect sk-rect5'></div></div>";
 
-    // // //TODO
-    // if ($cookies.get('SOCID') == undefined) {
-    //   $scope.splashscreen = "Merci de vous connecter à Andsoft";
-    //   var LoadingScreen = window.pleaseWait({
-    //     logo: 'images/ICO/ico_home.svg',
-    //     backgroundColor: '#4CDEBA',
-    //     loadingHtml: $scope.splashscreen
-    //   });
-    //   throw console.error("Pas de soc ID");
-    // }
+    //TODO
+    if ($cookies.get('SOCID') == undefined || $cookies.get('SOCID') == "") {
+      $scope.splashscreen = "Merci de vous connecter à Andsoft";
+      var LoadingScreen = window.pleaseWait({
+        logo: 'images/ICO/ico_home.svg',
+        backgroundColor: '#4CDEBA',
+        loadingHtml: $scope.splashscreen
+      });
+      throw console.error("Pas de soc ID");
+    }
 
     var LoadingScreen = window.pleaseWait({
       logo: 'images/ICO/ico_home.svg',
@@ -39,78 +39,82 @@ angular.module('dmsCartoApp')
     };
     $scope.date = new Date();
     var addmarker;
-    //init
-    angular.fromJson(apiDMSCARTO.loadChauffeurs('16'))
-      .then(function(response) {
-        $scope.chauffeurs = response.data;
-      });
-    var gpsSocPos = [];
-    var gpsSocPosLong = [];
-    $scope.markers = [];
-    $scope.markersRam = [];
-    $scope.boxesRight = [];
-    $scope.otherLastPos = [];
-    $scope.TrajetPath = [];
-    $scope.loadingPrdict = false;
-    $scope.boundsMarkers = new google.maps.LatLngBounds();
-    angular.fromJson(apiDMSCARTO.loadSocposition('16'))
-      .then(function(response) {
-        var socPosition = response.data;
-        gpsSocPos = socPosition[0].SOCGOOGLEMAP.split(",");
-        gpsSocPosLong = gpsSocPos[1].split("|");
-        $scope.map = {
-          center: {
-            latitude: gpsSocPos[0],
-            longitude: gpsSocPosLong[0]
-          },
-          events: $scope.events,
-          zoom: 8,
-          control: {},
-          markersControl: {},
-          markerHome: {
-            id: Date.now(),
-            coords: {
+
+    uiGmapGoogleMapApi.then(function(maps) {
+
+      //init
+      angular.fromJson(apiDMSCARTO.loadChauffeurs($cookies.get('SOCID')))
+        .then(function(response) {
+          $scope.chauffeurs = response.data;
+        });
+      var gpsSocPos = [];
+      var gpsSocPosLong = [];
+      $scope.markers = [];
+      $scope.markersRam = [];
+      $scope.boxesRight = [];
+      $scope.otherLastPos = [];
+      $scope.TrajetPath = [];
+      $scope.loadingPrdict = false;
+      $scope.boundsMarkers = new google.maps.LatLngBounds();
+      angular.fromJson(apiDMSCARTO.loadSocposition($cookies.get('SOCID')))
+        .then(function(response) {
+          var socPosition = response.data;
+          gpsSocPos = socPosition[0].SOCGOOGLEMAP.split(",");
+          gpsSocPosLong = gpsSocPos[1].split("|");
+          $scope.map = {
+            center: {
               latitude: gpsSocPos[0],
               longitude: gpsSocPosLong[0]
             },
-            options: {
-              icon: {
-                url: 'images/ICO/ico_home.svg'
+            events: $scope.events,
+            zoom: 8,
+            control: {},
+            markersControl: {},
+            markerHome: {
+              id: Date.now(),
+              coords: {
+                latitude: gpsSocPos[0],
+                longitude: gpsSocPosLong[0]
+              },
+              options: {
+                icon: {
+                  url: 'images/ICO/ico_home.svg'
+                }
               }
             }
+          };
+          $scope.clusterOptions = {
+            gridSize: 20,
+            maxZoom: 15,
+            styles: [{
+              height: 75,
+              url: "images/ICO/ico_liv_v_m.svg",
+              width: 75
+            }]
           }
-        };
-        $scope.clusterOptions = {
-          gridSize: 20,
-          maxZoom: 15,
-          styles: [{
-            height: 75,
-            url: "images/ICO/ico_liv_v_m.svg",
-            width: 75
-          }]
-        }
-        $scope.clusterChauffeurOptions = {
-          gridSize: 20,
-          maxZoom: 15,
-          styles: [{
-            height: 75,
-            url: "images/ICO/ico_truck_other.svg",
-            width: 75
-          }]
-        }
-        $scope.homepos = new google.maps.LatLng(gpsSocPos[0], gpsSocPosLong[0]);
-        LoadingScreen.finish();
-      }, function errorCallback(response) {
-        console.log("error api");
-        console.log(response);
-        $scope.map = {
-          center: {
-            latitude: 45,
-            longitude: 6
-          },
-          zoom: 8
-        };
-      });
+          $scope.clusterChauffeurOptions = {
+            gridSize: 20,
+            maxZoom: 15,
+            styles: [{
+              height: 75,
+              url: "images/ICO/ico_truck_other.svg",
+              width: 75
+            }]
+          }
+          $scope.homepos = new google.maps.LatLng(gpsSocPos[0], gpsSocPosLong[0]);
+          LoadingScreen.finish();
+        }, function errorCallback(response) {
+          console.log("error api");
+          console.log(response);
+          $scope.map = {
+            center: {
+              latitude: 45,
+              longitude: 6
+            },
+            zoom: 8
+          };
+        });
+    });
 
     $scope.setCenter = function(bool, coods) {
       if (bool) {
@@ -121,6 +125,151 @@ angular.module('dmsCartoApp')
     $scope.clearSearchTerm = function() {
       $scope.searchTerm = '';
     };
+
+    //Func divers
+    function getImg(codeAno) {
+      var output;
+      switch (codeAno) {
+        case "LIVCFM":
+          output = 'images/ICO/ico_liv_v.svg';
+          break;
+        case "RAMCFM":
+          output = 'images/ICO/ico_ram_v.svg';
+          break;
+        default:
+          output = 'images/ICO/ico_liv_a.svg';
+      }
+      return output;
+    }
+
+    function getTime(date) {
+      try {
+        var part = date.split(' ');
+        var partstime = part[1].split(':');
+        return partstime[0] + ":" + partstime[1];
+
+      } catch (e) {
+        return "#error";
+      }
+    }
+
+    function getClassColor(codeAno, date) {
+      var output;
+      switch (codeAno) {
+        case "LIVCFM":
+          output = 'green';
+          break;
+        case "RAMCFM":
+          output = 'green';
+          break;
+        case "pack":
+          output = 'purple';
+          break;
+        default:
+          output = 'red';
+      }
+      return output;
+    }
+
+    function getIco(codeAno) {
+      var output;
+      switch (codeAno) {
+        case "LIVCFM":
+          output = '<i class="fa fa-check" aria-hidden="true"></i> ';
+          break;
+        case "RAMCFM":
+          output = '<i class="fa fa-check" aria-hidden="true"></i> ';
+          break;
+        case "pack":
+          output = '<i class="fa fa-suitcase" aria-hidden="true"></i> ';
+          break;
+        case "nogps":
+          output = '<i class="fa fa-map" aria-hidden="true"></i> ';
+          break;
+        default:
+          output = '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> ';
+      }
+      return output;
+    }
+
+    function dateDiff(date1, date2) {
+      var diff = {} // Initialisation du retour
+      var tmp = date2 - date1;
+
+      tmp = Math.floor(tmp / 1000); // Nombre de secondes entre les 2 dates
+      diff.sec = tmp % 60; // Extraction du nombre de secondes
+
+      tmp = Math.floor((tmp - diff.sec) / 60); // Nombre de minutes (partie entière)
+      diff.min = tmp % 60; // Extraction du nombre de minutes
+
+      tmp = Math.floor((tmp - diff.min) / 60); // Nombre d'heures (entières)
+      diff.hour = tmp % 24; // Extraction du nombre d'heures
+
+      tmp = Math.floor((tmp - diff.hour) / 24); // Nombre de jours restants
+      diff.day = tmp;
+
+      return diff;
+    }
+
+    function convertDate(inputFormat) {
+      function pad(s) {
+        return (s < 10) ? '0' + s : s;
+      }
+      var d = new Date(inputFormat);
+      return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('/');
+    }
+
+    $scope.reloadAuto = function(selectedChauffeur, cb1, cb2, cb3, sw1, date) {
+      var reloadRoutine;
+      if (sw1) {
+        $scope.interval = $interval(function() {
+          $scope.boxesRight = [];
+          if ($scope.cb1) {
+            $scope.getPositionsLivraisons($scope.selectedChauffeur, true, date);
+          }
+          if ($scope.cb2) {
+            $scope.getTrajetLivraison($scope.selectedChauffeur, true, date);
+          }
+          if ($scope.cb4) {
+            $scope.getPositionsRamasses($scope.selectedChauffeur, $scope.cb4, $scope.date);
+          }
+          if ($scope.cb3) {
+            $scope.getLastPosOther($scope.selectedChauffeur, true, date);
+          }
+          console.log("reload");
+        }, 120000);
+      } else {
+        console.log("out " + $scope.interval);
+        $interval.cancel($scope.interval);
+      }
+    }
+
+    $scope.markersClick = function(id) {
+      console.log(id);
+      $scope.accordion.toggle(id);
+      $scope.$apply();
+    }
+
+    $scope.boxClick = function(title) {
+      if (title == "Inconnu") {
+        var toast = $mdToast.simple()
+          .textContent('Position inconnu')
+          .action('X')
+          .highlightAction(true)
+          .position('top right');
+        $mdToast.show(toast).then(function() {});
+      } else {
+        find = _.find($scope.markers, {
+          'idClick': title
+        });
+
+        $scope.map.center = {
+          latitude: find.coords.latitude,
+          longitude: find.coords.longitude
+        };
+        $scope.map.zoom = 18;
+      }
+    }
 
     //watcher selectedChauffeur
     $scope.$watch('selectedChauffeur', function() {
@@ -310,7 +459,7 @@ angular.module('dmsCartoApp')
           $scope.boxesRight = [];
           $scope.boundsMarkers = new google.maps.LatLngBounds();
           if ($scope.cb3) {
-            $scope.getLastPosOther($scope.selectedChauffeur,true)
+            $scope.getLastPosOther($scope.selectedChauffeur, true)
           }
         }
       } catch (e) {
@@ -327,12 +476,6 @@ angular.module('dmsCartoApp')
               });
               if (schpos == undefined) {
                 //req api maps
-                if (pos.OTPTRSCODE == "LIV") {
-                  dataGeocode(pos.OTPARRNOM, pos.OTPARRADR1, pos.OTPARRUSRVILCP, pos.OTPARRUSRVILLIB);
-                } else {
-                  dataGeocode(pos.OTPDEPNOM, pos.OTPDEPADR1, pos.OTPDEPUSRVILCP, pos.OTPDEPUSRVILLIB);
-                }
-
                 function dataGeocode(nom, adr, cp, ville) {
                   angular.fromJson(apiDMSCARTO.getGeocode(nom, adr, cp, ville))
                     .then(function(response) {
@@ -387,6 +530,12 @@ angular.module('dmsCartoApp')
                         }
                       }
                     });
+                }
+
+                if (pos.OTPTRSCODE == "LIV") {
+                  dataGeocode(pos.OTPARRNOM, pos.OTPARRADR1, pos.OTPARRUSRVILCP, pos.OTPARRUSRVILLIB);
+                } else {
+                  dataGeocode(pos.OTPDEPNOM, pos.OTPDEPADR1, pos.OTPDEPUSRVILCP, pos.OTPDEPUSRVILLIB);
                 }
               }
             });
@@ -828,7 +977,8 @@ angular.module('dmsCartoApp')
         });
       //si chauffeur only checkbox
       if ($scope.cb1 != true && $scope.cb2 != true && $scope.cb3 == true && $scope.cb4 != true) {
-        angular.fromJson(apiDMSCARTO.getInfoTourneeSociete('16', (new Date(Date.now()).toLocaleString().substring(0, 10))))
+        var dateformat = convertDate($scope.date);
+        angular.fromJson(apiDMSCARTO.getInfoTourneeSociete($cookies.get('SOCID'), dateformat))
           .then(function(response) {
             $scope.boxesGauge = [];
             console.log(response.data);
@@ -861,72 +1011,19 @@ angular.module('dmsCartoApp')
               } else {
                 if (gauge.typeMission == "LIV") {
                   find.gauges.liv = gauge.nbFait,
-                  find.gauges.livTot = gauge.nbPos,
-                  find.gauges.livPercent = (parseInt(gauge.nbFait) * 100) / parseInt(gauge.nbPos)
-                }
-                else {
+                    find.gauges.livTot = gauge.nbPos,
+                    find.gauges.livPercent = (parseInt(gauge.nbFait) * 100) / parseInt(gauge.nbPos)
+                } else {
                   find.gauges.ram = gauge.nbFait,
-                  find.gauges.ramTot = gauge.nbPos,
-                  find.gauges.ramPercent = (parseInt(gauge.nbFait) * 100) / parseInt(gauge.nbPos)
+                    find.gauges.ramTot = gauge.nbPos,
+                    find.gauges.ramPercent = (parseInt(gauge.nbFait) * 100) / parseInt(gauge.nbPos)
                 }
               }
             });
             console.log($scope.boxesGauge);
           });
-      }else {
+      } else {
         $scope.boxesGauge = [];
-      }
-    }
-
-    $scope.reloadAuto = function(selectedChauffeur, cb1, cb2, cb3, sw1, date) {
-      var reloadRoutine;
-      if (sw1) {
-        $scope.interval = $interval(function() {
-          $scope.boxesRight = [];
-          if ($scope.cb1) {
-            $scope.getPositionsLivraisons($scope.selectedChauffeur, true, date);
-          }
-          if ($scope.cb2) {
-            $scope.getTrajetLivraison($scope.selectedChauffeur, true, date);
-          }
-          if ($scope.cb4) {
-            $scope.getPositionsRamasses($scope.selectedChauffeur, $scope.cb4, $scope.date);
-          }
-          if ($scope.cb3) {
-            $scope.getLastPosOther($scope.selectedChauffeur, true, date);
-          }
-          console.log("reload");
-        }, 10000);
-      } else {
-        console.log("out " + $scope.interval);
-        $interval.cancel($scope.interval);
-      }
-    }
-
-    $scope.markersClick = function(id) {
-      console.log(id);
-      $scope.accordion.toggle(id);
-      $scope.$apply();
-    }
-
-    $scope.boxClick = function(title) {
-      if (title == "Inconnu") {
-        var toast = $mdToast.simple()
-          .textContent('Position inconnu')
-          .action('X')
-          .highlightAction(true)
-          .position('top right');
-        $mdToast.show(toast).then(function() {});
-      } else {
-        find = _.find($scope.markers, {
-          'idClick': title
-        });
-
-        $scope.map.center = {
-          latitude: find.coords.latitude,
-          longitude: find.coords.longitude
-        };
-        $scope.map.zoom = 18;
       }
     }
 
@@ -962,99 +1059,6 @@ angular.module('dmsCartoApp')
         marker.setMap(map.getMap());
         var markerCluster = new MarkerClusterer(map, $scope.otherLastPos);
       });
-    }
-
-    //Func divers
-    function getImg(codeAno) {
-      var output;
-      switch (codeAno) {
-        case "LIVCFM":
-          output = 'images/ICO/ico_liv_v.svg';
-          break;
-        case "RAMCFM":
-          output = 'images/ICO/ico_ram_v.svg';
-          break;
-        default:
-          output = 'images/ICO/ico_liv_a.svg';
-      }
-      return output;
-    }
-
-    function getTime(date) {
-      try {
-        var part = date.split(' ');
-        var partstime = part[1].split(':');
-        return partstime[0] + ":" + partstime[1];
-
-      } catch (e) {
-        return "#error";
-      }
-    }
-
-    function getClassColor(codeAno, date) {
-      var output;
-      switch (codeAno) {
-        case "LIVCFM":
-          output = 'green';
-          break;
-        case "RAMCFM":
-          output = 'green';
-          break;
-        case "pack":
-          output = 'purple';
-          break;
-        default:
-          output = 'red';
-      }
-      return output;
-    }
-
-    function getIco(codeAno) {
-      var output;
-      switch (codeAno) {
-        case "LIVCFM":
-          output = '<i class="fa fa-check" aria-hidden="true"></i> ';
-          break;
-        case "RAMCFM":
-          output = '<i class="fa fa-check" aria-hidden="true"></i> ';
-          break;
-        case "pack":
-          output = '<i class="fa fa-suitcase" aria-hidden="true"></i> ';
-          break;
-        case "nogps":
-          output = '<i class="fa fa-map" aria-hidden="true"></i> ';
-          break;
-        default:
-          output = '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> ';
-      }
-      return output;
-    }
-
-    function dateDiff(date1, date2) {
-      var diff = {} // Initialisation du retour
-      var tmp = date2 - date1;
-
-      tmp = Math.floor(tmp / 1000); // Nombre de secondes entre les 2 dates
-      diff.sec = tmp % 60; // Extraction du nombre de secondes
-
-      tmp = Math.floor((tmp - diff.sec) / 60); // Nombre de minutes (partie entière)
-      diff.min = tmp % 60; // Extraction du nombre de minutes
-
-      tmp = Math.floor((tmp - diff.min) / 60); // Nombre d'heures (entières)
-      diff.hour = tmp % 24; // Extraction du nombre d'heures
-
-      tmp = Math.floor((tmp - diff.hour) / 24); // Nombre de jours restants
-      diff.day = tmp;
-
-      return diff;
-    }
-
-    function convertDate(inputFormat) {
-      function pad(s) {
-        return (s < 10) ? '0' + s : s;
-      }
-      var d = new Date(inputFormat);
-      return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('/');
     }
 
     $scope.recadre = function() {
@@ -1100,6 +1104,14 @@ angular.module('dmsCartoApp')
         }
       }
     }
+    $scope.showAlert = function(ev) {
+      $mdDialog.show({
+        templateUrl: 'views/help.html',
+        parent: angular.element(document.body),
+        targetEvent: ev,
+        clickOutsideToClose: true
+      })
+    };
 
     var originatorEv;
     $scope.openMenu = function($mdOpenMenu, ev) {

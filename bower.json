@@ -20,7 +20,8 @@
     "angular-cookies": "^1.5.7",
     "angular-sanitize": "^1.5.7",
     "components-font-awesome": "^4.6.3",
-    "konami-js": "^1.4.6"
+    "konami-js": "^1.4.6",
+    "moment": "^2.15.2"
   },
   "devDependencies": {
     "angular-mocks": "^1.4.0",
